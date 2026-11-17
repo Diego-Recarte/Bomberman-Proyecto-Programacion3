@@ -8,7 +8,7 @@ VentanaJuego::VentanaJuego() {
     escena = new QGraphicsScene(this);
     setScene(escena);
     escena->setSceneRect(0, 0, 1500,  770);
-
+    showMaximized();
     personaje = escena->addRect(0, 0, VentanaJuego:: tamanoJugador, VentanaJuego:: tamanoJugador     );
     personaje->setPos(100, 100);
 
