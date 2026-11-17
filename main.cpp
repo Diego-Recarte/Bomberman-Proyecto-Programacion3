@@ -1,9 +1,19 @@
 #include <iostream>
+#include <QApplication>
+#include <QWidget>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include "ventanajuego.h"
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-    cout << "Bye World!" << endl;
-    return 0;
+    QApplication aplicacion(argc, argv);
+
+    VentanaJuego ventana;
+   ventana.resize(600, 440);
+    ventana.showMaximized();
+
+    return aplicacion.exec();
 }
