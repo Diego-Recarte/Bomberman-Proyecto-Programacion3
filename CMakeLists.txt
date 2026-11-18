@@ -9,7 +9,10 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 add_executable(Bomberman_22541083_22441370 main.cpp
     ventanajuego.cpp
     mapa.h mapa.cpp
-    boton.h boton.cpp)
+    boton.h boton.cpp
+    bomba.h bomba.cpp
+    nodobomba.h nodobomba.cpp
+    colabomba.h colabomba.cpp)
 target_link_libraries(Bomberman_22541083_22441370 PRIVATE Qt6::Widgets)
 
 include(GNUInstallDirs)
