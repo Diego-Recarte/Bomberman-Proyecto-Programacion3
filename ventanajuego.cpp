@@ -9,7 +9,9 @@ VentanaJuego::VentanaJuego() {
     escena = new QGraphicsScene(this);//QGraphicScence
     setScene(escena);
     escena->setSceneRect(0, 0, 1500,  770);
+
     this->showFullScreen();
+
 
     personaje = escena->addRect(0, 0, VentanaJuego:: tamanoJugador, VentanaJuego:: tamanoJugador     );
     personaje->setPos(100, 100);
@@ -203,7 +205,12 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
     bool direccionValida[4] = {true, true, true, true};
     int direccionAlcance[4] = {0, 0, 0, 0};
 
-    int filaBomba = y / mapa->obtenerTamanoCelda();
+
+
+    int centroX = x + VentanaJuego::tamanoJugador / 2;
+    int centroY = y + VentanaJuego::tamanoJugador / 2;
+
+    int filaBomba = centroY / mapa->obtenerTamanoCelda();
     int columnaBomba = x / mapa->obtenerTamanoCelda();
 
     for (int i = 0; i < alcance; i++)

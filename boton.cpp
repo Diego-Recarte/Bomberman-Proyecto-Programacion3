@@ -11,7 +11,7 @@ Boton::Boton(QWidget *ventana, QString texto, int ancho, int alto, QString color
         "background-color: " + color + ";"
                   "color: white;"
                   "border-radius: 8px;"
-                  "font-size: 14px;"
+                  "font-size: 25px;"
                   "}"
 
                   "QPushButton:hover {"
