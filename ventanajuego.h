@@ -3,6 +3,7 @@
 
 
 #include "mapa.h"
+#include "colabomba.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
@@ -16,10 +17,13 @@ public:
 
 
 protected:
-    void keyPressEvent(QKeyEvent* evento) override;
-    void keyReleaseEvent(QKeyEvent* evento) override;
+    void keyPressEvent(QKeyEvent* evento) override; //KeyPress
+    void keyReleaseEvent(QKeyEvent* evento) override;//KeyRelseEvent
 
 private:
+
+    ~VentanaJuego();
+
     void actualizarMovimiento();
     QGraphicsScene* escena = nullptr;
     QGraphicsRectItem* personaje = nullptr;
@@ -27,10 +31,10 @@ private:
     QTimer* temporizadorMovimiento = nullptr;
 
 
-    QGraphicsRectItem* bomba = nullptr;
 
 
-    enum class Direccion{
+
+    enum class Direccion{//enum
         Arriba,
         Abajo,
         Izquierda,
@@ -50,6 +54,15 @@ private:
     Mapa* mapa = nullptr;
     void construirMapa();
 
+
+    //bombas
+
+    ColaBomba bombas;
+    void actualizarBombas();
+
+    void crearExplosion(int x, int y, int tamanoCelda,int alcance);
+
+    int tamanoFlama = 20;
 
 };
 

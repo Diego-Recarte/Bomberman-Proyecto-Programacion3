@@ -1,13 +1,15 @@
 #include "ventanajuego.h"
+#include<iostream>
 
 
 
 VentanaJuego::VentanaJuego() {
 
     setWindowTitle("Bomberman - Mi primera ventana");
-    escena = new QGraphicsScene(this);
+    escena = new QGraphicsScene(this);//QGraphicScence
     setScene(escena);
     escena->setSceneRect(0, 0, 1500,  770);
+    this->showFullScreen();
 
     personaje = escena->addRect(0, 0, VentanaJuego:: tamanoJugador, VentanaJuego:: tamanoJugador     );
     personaje->setPos(100, 100);
@@ -18,12 +20,18 @@ VentanaJuego::VentanaJuego() {
 
 
 
+
     temporizadorMovimiento = new QTimer(this);
     connect(temporizadorMovimiento, &QTimer::timeout,this, &VentanaJuego::actualizarMovimiento);
+    connect(temporizadorMovimiento, &QTimer::timeout, this, &VentanaJuego::actualizarBombas);
     temporizadorMovimiento->start(16);
 
 }
-void VentanaJuego::keyPressEvent(QKeyEvent* evento){
+
+VentanaJuego::~VentanaJuego(){
+    bombas.vaciar();
+}
+void VentanaJuego::keyPressEvent(QKeyEvent* evento){ //keypressevent
 
         if (evento->key() == Qt::Key_D){
             direccion =Direccion::Derecha;
@@ -43,7 +51,12 @@ void VentanaJuego::keyPressEvent(QKeyEvent* evento){
             evento->accept();
             return;
         }else if (evento->key() == Qt::Key_Space){
-            colocarBomba();
+
+            if (!evento->isAutoRepeat()){
+                colocarBomba();
+            }
+
+
             evento->accept();
             return;
         }
@@ -51,7 +64,7 @@ void VentanaJuego::keyPressEvent(QKeyEvent* evento){
 
 }
 
-void VentanaJuego::keyReleaseEvent(QKeyEvent* evento) {
+void VentanaJuego::keyReleaseEvent(QKeyEvent* evento) {//KeyreleseEvent
     if (evento->isAutoRepeat())
     {
         evento->accept();
@@ -154,8 +167,157 @@ void VentanaJuego::construirMapa(){
 
 
 void VentanaJuego::colocarBomba(){
-    bomba = escena->addRect(0, 0, tamanoJugador, tamanoJugador, QPen(Qt::black), QBrush(Qt::black));
 
-    bomba->setPos(personaje->pos());
+    int fila = personaje->pos().y();
+    int columna = personaje->pos().x();
+    std::cout<<"Agregar"<<std::endl;
+    bombas.agregar(fila, columna, 3000,escena);
+
 }
 
+
+void VentanaJuego::actualizarBombas(){
+    while (bombas.primeraBombaVencida()){
+
+        int x = 0;
+        int y = 0;
+        int alcance;
+        if (bombas.obtenerPosicionPrimera(x, y, alcance)){
+             crearExplosion(x, y, mapa->obtenerTamanoCelda(),alcance);
+        }
+        bombas.eliminar();
+
+
+    }
+}
+
+
+void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
+    x=x+tamanoJugador/4;
+    y=y+tamanoJugador/4;
+    QGraphicsRectItem* flamaCentral = escena->addRect(  0, 0, VentanaJuego::tamanoFlama, VentanaJuego::tamanoFlama,  QPen(Qt::red), QBrush(Qt::yellow));
+    flamaCentral->setPos(x, y);
+    QTimer::singleShot(500, this, [flamaCentral]() {
+        delete flamaCentral;
+    });
+    bool direccionValida[4] = {true, true, true, true};
+    int direccionAlcance[4] = {0, 0, 0, 0};
+
+    int filaBomba = y / mapa->obtenerTamanoCelda();
+    int columnaBomba = x / mapa->obtenerTamanoCelda();
+
+    for (int i = 0; i < alcance; i++)
+    {
+        int distancia = i + 1;
+
+        if (direccionValida[0])
+        {
+            int filaFlama = filaBomba - distancia;
+
+            if (mapa->esObstaculo(filaFlama, columnaBomba))
+            {
+                direccionValida[0] = false;
+            }
+            else
+            {
+                direccionAlcance[0]++;
+            }
+        }
+
+        if (direccionValida[1])
+        {
+            int filaFlama = filaBomba + distancia;
+
+            if (mapa->esObstaculo(filaFlama, columnaBomba))
+            {
+                direccionValida[1] = false;
+            }
+            else
+            {
+                direccionAlcance[1]++;
+            }
+        }
+
+        if (direccionValida[2])
+        {
+            int columnaFlama = columnaBomba - distancia;
+
+            if (mapa->esObstaculo(filaBomba, columnaFlama))
+            {
+                direccionValida[2] = false;
+            }
+            else
+            {
+                direccionAlcance[2]++;
+            }
+        }
+
+        if (direccionValida[3])
+        {
+            int columnaFlama = columnaBomba + distancia;
+
+            if (mapa->esObstaculo(filaBomba, columnaFlama))
+            {
+                direccionValida[3] = false;
+            }
+            else
+            {
+                direccionAlcance[3]++;
+            }
+        }
+    }
+
+    int retrasoPorAnillo = 100;
+
+    for (int i = 0; i < alcance; i++)
+    {
+        int desplazamiento = tamanoCelda * (i + 1);
+        int retraso = retrasoPorAnillo * i;
+
+        QTimer::singleShot(retraso, this, [this, x, y, desplazamiento, i, direccionAlcance](){
+           if (direccionAlcance[0] > i){
+               QGraphicsRectItem* flama = escena->addRect(0, 0,   VentanaJuego::tamanoFlama, VentanaJuego::tamanoFlama,  QPen(Qt::red),  QBrush(Qt::yellow));
+
+               flama->setPos(x, y - desplazamiento);
+
+               QTimer::singleShot(500, this, [flama](){
+                      delete flama;
+                });
+           }
+
+           if (direccionAlcance[1] > i){
+               QGraphicsRectItem* flama = escena->addRect( 0, 0,VentanaJuego::tamanoFlama, VentanaJuego::tamanoFlama,QPen(Qt::red),QBrush(Qt::yellow) );
+
+               flama->setPos(x, y + desplazamiento);
+
+               QTimer::singleShot(500, this, [flama](){ delete flama; });
+           }
+
+           if (direccionAlcance[2] > i){
+               QGraphicsRectItem* flama = escena->addRect(0, 0, VentanaJuego::tamanoFlama, VentanaJuego::tamanoFlama, QPen(Qt::red),QBrush(Qt::yellow));
+
+               flama->setPos(x - desplazamiento, y);
+
+               QTimer::singleShot(500, this, [flama](){
+                   delete flama;
+                 });
+           }
+
+           if (direccionAlcance[3] > i){
+               QGraphicsRectItem* flama = escena->addRect(0, 0, VentanaJuego::tamanoFlama, VentanaJuego::tamanoFlama, QPen(Qt::red),QBrush(Qt::yellow));
+
+               flama->setPos(x + desplazamiento, y);
+
+               QTimer::singleShot(500, this, [flama]() {
+                   delete flama;
+                });
+           }
+       });
+    }
+
+
+
+
+
+
+}

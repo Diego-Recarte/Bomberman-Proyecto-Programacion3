@@ -13,44 +13,39 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    // Ventana principal
+
     QWidget ventana;
     ventana.setWindowTitle("Menu principal");
     ventana.resize(700, 600);
 
-    // Layout principal
+
+
     QVBoxLayout *principal = new QVBoxLayout(&ventana);
 
-    // PLACEHOLDER
-    QLabel *placeholder = new QLabel(
-        "Area de contenido", &ventana
-        );
+
+    QLabel *placeholder = new QLabel("Area de contenido", &ventana   );
 
     placeholder->setAlignment(Qt::AlignCenter);
     placeholder->setMinimumHeight(180);
 
-    placeholder->setStyleSheet(
-        "background-color: #eeeeee;"
-        "border: 2px solid #aaaaaa;"
-        "font-size: 20px;"
-        );
+    placeholder->setStyleSheet( "background-color: #eeeeee;" "border: 2px solid #aaaaaa;" "font-size: 20px;");
 
-    // GRID
+
     QGridLayout *grid = new QGridLayout();
 
-    // Crear botones
+
     Boton btnJugar(&ventana, "Jugar", 250, 70, "#27ae60");
     Boton btnInstruciones(&ventana, "Instrucciones", 250, 70, "#2980b9");
     Boton btnRanking(&ventana, "Ranking", 250, 70, "#8e44ad");
     Boton btnSalir(&ventana, "Salir", 250, 70, "#c0392b");
 
-    // Distribuir botones
+
     grid->addWidget(btnJugar.obtenerBoton(), 0, 0);
     grid->addWidget(btnInstruciones.obtenerBoton(), 0, 1);
     grid->addWidget(btnRanking.obtenerBoton(), 1, 0);
     grid->addWidget(btnSalir.obtenerBoton(), 1, 1);
 
-    // Crear ventana del juego
+
     VentanaJuego *juego = nullptr;
 
     QObject::connect(
@@ -68,15 +63,9 @@ int main(int argc, char *argv[])
         }
         );
 
-    // Conectar botón salir
-    QObject::connect(
-        btnSalir.obtenerBoton(),
-        &QPushButton::clicked,
-        &ventana,
-        &QWidget::close
-        );
+    QObject::connect(  btnSalir.obtenerBoton(),   &QPushButton::clicked,  &ventana,   &QWidget::close );
 
-    // Agregar layouts
+
     principal->addWidget(placeholder, 1);
     principal->addLayout(grid);
 
