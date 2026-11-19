@@ -18,6 +18,11 @@ public:
     void vaciar();
     void agregar(int fila, int columna, int tiempo,  QGraphicsScene* escena);
 
+    bool existeBombaEn(int fila, int columna) const;
+
+    bool localizarBomba(int fila, int columna, int& x, int& y, int& alcance,int tamanoCelda, int tamanoJugador);
+    bool eliminarBombaEn(int fila, int columna, int tamanoCelda,int tamanoJugador);
+
 private:
     NodoBomba* primero = nullptr;
     NodoBomba* ultimo = nullptr;

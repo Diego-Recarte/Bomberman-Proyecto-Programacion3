@@ -1,6 +1,6 @@
 #ifndef MAPA_H
 #define MAPA_H
-
+#include "celda.h"
 class Mapa{
 public:
 
@@ -10,18 +10,19 @@ Mapa(int filas, int columnas, int tamanoCelda);
 
 void crearMapa();
 bool esObstaculo(int fila, int columna) const;
+Celda* obtenerCelda(int fila, int columna);
 
 int obtenerFilas() const;
 int obtenerColumnas() const;
 int obtenerTamanoCelda() const;
-int** obtenerMapa() const;
+
 
 private:
 int filas;
 int columnas;
 int tamanoCelda;
 
-int** mapa = nullptr;
+Celda** mapa = nullptr;
 };
 
 #endif // MAPA_H

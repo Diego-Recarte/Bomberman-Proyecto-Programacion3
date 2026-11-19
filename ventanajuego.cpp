@@ -157,9 +157,8 @@ void VentanaJuego::actualizarMovimiento(){
 void VentanaJuego::construirMapa(){
     for (int fila = 0; fila <mapa->obtenerFilas();  fila++){
         for (int columna = 0; columna < mapa->obtenerColumnas(); columna++) {
-            if (mapa->obtenerMapa()[fila][columna] == 1){
-                escena->addRect(columna * mapa->obtenerTamanoCelda(),fila * mapa->obtenerTamanoCelda(), mapa->obtenerTamanoCelda(), mapa->obtenerTamanoCelda());
-            }
+                mapa->obtenerCelda(fila, columna)->dibujar(escena,columna * mapa->obtenerTamanoCelda(),  fila * mapa->obtenerTamanoCelda(), mapa->obtenerTamanoCelda() );
+
         }
     }
 }
@@ -207,26 +206,37 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
 
 
 
-    int centroX = x + VentanaJuego::tamanoJugador / 2;
-    int centroY = y + VentanaJuego::tamanoJugador / 2;
+    int centroY = y + VentanaJuego::tamanoJugador / 4;
+    int centroX = x + VentanaJuego::tamanoJugador / 4;
+
 
     int filaBomba = centroY / mapa->obtenerTamanoCelda();
-    int columnaBomba = x / mapa->obtenerTamanoCelda();
+    int columnaBomba = centroX / mapa->obtenerTamanoCelda();
+
+
+    int retrasoPorAnillo = 100;
 
     for (int i = 0; i < alcance; i++)
     {
         int distancia = i + 1;
 
-        if (direccionValida[0])
-        {
+        if (direccionValida[0]){
             int filaFlama = filaBomba - distancia;
-
-            if (mapa->esObstaculo(filaFlama, columnaBomba))
+            Celda* bomba= mapa->obtenerCelda(filaFlama, columnaBomba);
+            if (bomba->esObstaculo())
+            {
+                bomba->recibirExplosion();
+                direccionValida[0] = false;
+            }
+            else if (reaccionEnCadena(filaFlama, columnaBomba, retrasoPorAnillo * distancia))
             {
                 direccionValida[0] = false;
             }
             else
             {
+
+
+
                 direccionAlcance[0]++;
             }
         }
@@ -234,13 +244,19 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
         if (direccionValida[1])
         {
             int filaFlama = filaBomba + distancia;
-
-            if (mapa->esObstaculo(filaFlama, columnaBomba))
+            Celda* bomba= mapa->obtenerCelda(filaFlama, columnaBomba);
+            if (bomba->esObstaculo())
+            {
+                bomba->recibirExplosion();
+                direccionValida[1] = false;
+            }
+            else if (reaccionEnCadena(filaFlama, columnaBomba, retrasoPorAnillo * distancia))
             {
                 direccionValida[1] = false;
             }
             else
             {
+
                 direccionAlcance[1]++;
             }
         }
@@ -248,33 +264,43 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
         if (direccionValida[2])
         {
             int columnaFlama = columnaBomba - distancia;
-
-            if (mapa->esObstaculo(filaBomba, columnaFlama))
+            Celda* bomba= mapa->obtenerCelda(filaBomba, columnaFlama);
+            if (bomba->esObstaculo())
             {
+                bomba->recibirExplosion();
+                direccionValida[2] = false;
+            }
+            else if (reaccionEnCadena(filaBomba,  columnaFlama, retrasoPorAnillo * distancia)) {
                 direccionValida[2] = false;
             }
             else
             {
+
+
                 direccionAlcance[2]++;
             }
         }
 
-        if (direccionValida[3])
-        {
+        if (direccionValida[3]){
             int columnaFlama = columnaBomba + distancia;
-
-            if (mapa->esObstaculo(filaBomba, columnaFlama))
+            Celda* bomba= mapa->obtenerCelda(filaBomba, columnaFlama);
+            if (bomba->esObstaculo())
             {
+                bomba->recibirExplosion();
                 direccionValida[3] = false;
             }
+            else if (reaccionEnCadena(filaBomba,  columnaFlama,retrasoPorAnillo * distancia)) {
+                direccionValida[3] = false;
+            }
+
             else
             {
+
                 direccionAlcance[3]++;
             }
         }
     }
 
-    int retrasoPorAnillo = 100;
 
     for (int i = 0; i < alcance; i++)
     {
@@ -322,9 +348,25 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
        });
     }
 
-
-
-
-
-
 }
+
+bool VentanaJuego::reaccionEnCadena(int filaFlama, int columnaFlama, int retraso){
+    int xBombaEncontrada = 0;
+    int yBombaEncontrada = 0;
+    int alcanceBombaEncontrada = 0;
+
+
+    if (bombas.localizarBomba( filaFlama, columnaFlama,   xBombaEncontrada,yBombaEncontrada, alcanceBombaEncontrada, mapa->obtenerTamanoCelda(),VentanaJuego::tamanoJugador)){
+
+        QTimer::singleShot(retraso,this,[this, xBombaEncontrada, yBombaEncontrada, alcanceBombaEncontrada, filaFlama, columnaFlama]() {
+            crearExplosion(xBombaEncontrada,yBombaEncontrada,mapa->obtenerTamanoCelda(),alcanceBombaEncontrada);
+            bombas.eliminarBombaEn( filaFlama,columnaFlama, mapa->obtenerTamanoCelda(),VentanaJuego::tamanoJugador );
+
+            });
+
+        return true;
+    }
+
+    return false;
+}
+

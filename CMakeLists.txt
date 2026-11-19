@@ -12,7 +12,8 @@ add_executable(Bomberman_22541083_22441370 main.cpp
     boton.h boton.cpp
     bomba.h bomba.cpp
     nodobomba.h nodobomba.cpp
-    colabomba.h colabomba.cpp)
+    colabomba.h colabomba.cpp
+    celda.h celda.cpp)
 target_link_libraries(Bomberman_22541083_22441370 PRIVATE Qt6::Widgets)
 
 include(GNUInstallDirs)

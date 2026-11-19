@@ -23,45 +23,54 @@ Mapa::~Mapa()//destructor
 
 void Mapa::crearMapa()
 {
-    mapa = new int*[filas];
+
+    if (mapa != nullptr)
+    {
+        return;
+    }
+
+    mapa = new Celda*[filas];
+    mapa = new Celda*[filas];
 
     for (int fila = 0; fila < filas; fila++)
     {
-        mapa[fila] = new int[columnas]{};
+        mapa[fila] = new Celda[columnas]{};
 
         for (int columna = 0; columna < columnas; columna++)
         {
             if (fila == 0 || fila == filas - 1 ||
                 columna == 0 || columna == columnas - 1)
             {
-                mapa[fila][columna] = 1;
+                mapa[fila][columna] =  Celda(Tipo::pared);
             }
         }
     }
 
-    mapa [4][4]=1;
-    mapa [2][2]=1;
-    mapa [6][6]=1;
-    mapa [5][5]=1;
-    mapa [3][3]=1;
-    mapa [7][7]=1;
-    mapa [8][8]=1;
-    mapa [9][9]=1;
-    mapa [10][10]=1;
-    mapa [4][7]=1;
+    mapa[5][5]= Celda(Tipo::vacio);
+    mapa[6][6]= Celda(Tipo::caja);
+    mapa[7][7]= Celda(Tipo::pared);
+
+
+
+
 
 }
 
 bool Mapa::esObstaculo(int fila, int columna) const
 {
-    if (fila < 0 || fila >= filas ||
+    if (fila < 0  || fila >= filas ||
         columna < 0 || columna >= columnas)
     {
         return true;
     }
 
-    return mapa[fila][columna] != 0;
+    return mapa[fila][columna].esObstaculo();
 }
+
+Celda* Mapa::obtenerCelda(int fila, int columna){
+    return &mapa[fila][columna];
+}
+
 int Mapa::obtenerFilas() const
 {
     return filas;
@@ -78,10 +87,7 @@ int Mapa::obtenerTamanoCelda() const
 }
 
 
-int** Mapa::obtenerMapa() const
-{
-    return mapa;
-}
+
 
 
 

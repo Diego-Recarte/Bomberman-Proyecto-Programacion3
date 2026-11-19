@@ -64,6 +64,7 @@ private:
 
     int tamanoFlama = 20;
 
+     bool reaccionEnCadena( int filaFlama, int columnaBomba,int retraso);
 };
 
 #endif // VENTANAJUEGO_H
