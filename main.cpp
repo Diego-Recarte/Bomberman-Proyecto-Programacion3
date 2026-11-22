@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
     // Contenedor de pantallas
     QStackedWidget *pantallas = new QStackedWidget(&ventana);
 
-    // =================================
+
     // PANTALLA 1: MENU PRINCIPAL
-    // =================================
+
 
     QWidget *menu = new QWidget();
 
@@ -53,15 +53,12 @@ int main(int argc, char *argv[])
     principal->addWidget(placeholder, 1);
     principal->addLayout(grid);
 
-    // =================================
     // PANTALLA 2: JUEGO
-    // =================================
+
 
     VentanaJuego *juego = new VentanaJuego();
-
-    // =================================
     // AGREGAR PANTALLAS
-    // =================================
+
 
     pantallas->addWidget(menu);
     pantallas->addWidget(juego);
@@ -72,9 +69,8 @@ int main(int argc, char *argv[])
     layoutVentana->setContentsMargins(0, 0, 0, 0);
     layoutVentana->addWidget(pantallas);
 
-    // =================================
-    // CAMBIO DE PANTALLAS
-    // =================================
+
+    // CAMBIO DE PANTALLA
 
     QObject::connect(
         btnJugar.obtenerBoton(),

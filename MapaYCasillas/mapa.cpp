@@ -28,6 +28,9 @@ void Mapa::crearMapa()
     {
         return;
     }
+    srand(time(NULL));
+
+
 
     mapa = new Celda*[filas];
     mapa = new Celda*[filas];
@@ -38,22 +41,21 @@ void Mapa::crearMapa()
 
         for (int columna = 0; columna < columnas; columna++)
         {
-            if (fila == 0 || fila == filas - 1 ||
-                columna == 0 || columna == columnas - 1)
+            bool contorno = fila == 0 || fila == filas - 1 || columna == 0 || columna == columnas - 1;
+            //Se dibujan las casillas indestructibles que no son parte del contorno del mapa
+            bool pilar = fila % 2 == 0 and columna % 2 == 0;
+            //Se posicionan las cajas en puntos en los que no interfieran con otras casillas o el spawn del jugador
+            bool obstaculo = (fila % 2 == 1 || columna % 2 == 1) and !(fila <= 2 and columna <= 2) ;
+            bool resultado = (rand() % 100 < 30);//Un 30% de proabilidad de generar el obstaculo
+            if (contorno || pilar)
             {
                 mapa[fila][columna] =  Celda(Tipo::pared);
+            }else if(obstaculo and resultado){
+                mapa[fila][columna] =  Celda(Tipo::caja);
             }
+
         }
     }
-
-    mapa[5][5]= Celda(Tipo::vacio);
-    mapa[6][6]= Celda(Tipo::caja);
-    mapa[7][7]= Celda(Tipo::pared);
-
-
-
-
-
 }
 
 bool Mapa::esObstaculo(int fila, int columna) const
