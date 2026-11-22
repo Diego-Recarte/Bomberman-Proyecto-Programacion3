@@ -2,8 +2,8 @@
 #define VENTANAJUEGO_H
 
 
-#include "mapa.h"
-#include "colabomba.h"
+#include "MapaYCasillas/mapa.h"
+#include "Bombas/colabomba.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
