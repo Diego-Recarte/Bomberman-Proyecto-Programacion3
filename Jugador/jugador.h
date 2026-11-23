@@ -33,6 +33,7 @@ private:
     Mapa* mapa = nullptr;
 
     int movimiento = 5;
+    int vida = 2;
     int tamanoJugador = 40;
 
 };

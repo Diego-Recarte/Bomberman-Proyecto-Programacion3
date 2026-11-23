@@ -4,6 +4,7 @@
 
 #include "MapaYCasillas/mapa.h"
 #include "Bombas/colabomba.h"
+#include "Bombas/sistemaexplosion.h"
 #include "Jugador/jugador.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -38,14 +39,9 @@ private:
     //bombas
 
     ColaBomba bombas;
+    SistemaExplosion sistemaExplosion;
     void actualizarBombas();
 
-    void crearExplosion(int x, int y, int tamanoCelda,int alcance);
-    // El jugador se crea dentro del constructor; no existe aún al inicializar miembros.
-    int tamanoJugador = 0;
-    int tamanoFlama = 20;
-
-     bool reaccionEnCadena( int filaFlama, int columnaBomba,int retraso);
 };
 
 #endif // VENTANAJUEGO_H
