@@ -2,162 +2,103 @@
 #include<iostream>
 
 
-
-VentanaJuego::VentanaJuego() {
-
+VentanaJuego::VentanaJuego()
+{
     setWindowTitle("Bomberman - Mi primera ventana");
-    escena = new QGraphicsScene(this);//QGraphicScence
+
+    escena = new QGraphicsScene(this);
     setScene(escena);
-    escena->setSceneRect(0, 0, 1500,  770);
+
+    escena->setSceneRect(0, 0, 1500, 770);
 
     this->showFullScreen();
 
-
-    personaje = escena->addRect(0, 0, VentanaJuego:: tamanoJugador, VentanaJuego:: tamanoJugador     );
-    personaje->setPos(100, 100);
-
     mapa = new Mapa(11, 13, 70);
     mapa->crearMapa();
+
     construirMapa();
 
-
-
+    jugador = new Jugador(mapa);
+    if (jugador != nullptr) {
+        tamanoJugador = jugador->obtenerTamanio();
+        QGraphicsRectItem* personaje = jugador->obtenerPersonaje();
+        if (escena != nullptr && personaje != nullptr) {
+            escena->addItem(personaje);
+        }
+    }
 
     temporizadorMovimiento = new QTimer(this);
-    connect(temporizadorMovimiento, &QTimer::timeout,this, &VentanaJuego::actualizarMovimiento);
-    connect(temporizadorMovimiento, &QTimer::timeout, this, &VentanaJuego::actualizarBombas);
-    temporizadorMovimiento->start(16);
 
+    connect(temporizadorMovimiento, &QTimer::timeout,
+            this, [this]() {
+                if (jugador != nullptr) {
+                    jugador->actualizarMovimiento();
+                }
+            });
+
+    connect(temporizadorMovimiento, &QTimer::timeout,
+            this, &VentanaJuego::actualizarBombas);
+
+    temporizadorMovimiento->start(16);
 }
 
 VentanaJuego::~VentanaJuego(){
     bombas.vaciar();
 }
-void VentanaJuego::keyPressEvent(QKeyEvent* evento){ //keypressevent
+void VentanaJuego::keyPressEvent(QKeyEvent* evento)
+{
+    if (evento == nullptr) {
+        return;
+    }
 
-        if (evento->key() == Qt::Key_D){
-            direccion =Direccion::Derecha;
-            evento->accept();
-            return;
-        }else if (evento->key() == Qt::Key_A){
-            direccion =Direccion::Izquierda;
-            evento->accept();
-            return;
-        }else if(evento->key()==Qt::Key_W){
-             direccion =Direccion::Arriba;
-            evento->accept();
-            return;
+    if (evento->key() == Qt::Key_Space) {
 
-        }else if(evento->key()==Qt::Key_S){
-             direccion =Direccion::Abajo;
-            evento->accept();
-            return;
-        }else if (evento->key() == Qt::Key_Space){
-
-            if (!evento->isAutoRepeat()){
-                colocarBomba();
-            }
-
-
-            evento->accept();
-            return;
+        if (!evento->isAutoRepeat()) {
+            colocarBomba();
         }
+
+        evento->accept();
+        return;
+    }
+
+    if (jugador != nullptr) {
+        jugador->presionarTecla(evento);
+    }
+
+    if (!evento->isAccepted()) {
         QGraphicsView::keyPressEvent(evento);
-
+    }
 }
 
-void VentanaJuego::keyReleaseEvent(QKeyEvent* evento) {//KeyreleseEvent
-    if (evento->isAutoRepeat())
-    {
-        evento->accept();
+void VentanaJuego::keyReleaseEvent(QKeyEvent* evento)
+{
+    if (evento == nullptr) {
         return;
     }
 
-
-    if (evento->key() == Qt::Key_D&&direccion ==Direccion::Derecha)
-    {
-        direccion=Direccion::Null;
-        evento->accept();
-        return;
-    }else if(evento->key()==Qt::Key_A &&direccion ==Direccion::Izquierda){
-        direccion=Direccion::Null;
-        evento->accept();
-        return;
-    }else if (evento->key()==Qt::Key_W && direccion ==Direccion::Arriba){
-        direccion=Direccion::Null;
-        evento->accept();
-        return;
-    }else if(evento->key()== Qt::Key_S&& direccion ==Direccion::Abajo){
-        direccion=Direccion::Null;
-        evento->accept();
-        return;
-    }
-    QGraphicsView::keyReleaseEvent(evento);
-}
-
-void VentanaJuego::actualizarMovimiento(){
-
-    int x = personaje->pos().x();
-    int y = personaje->pos().y();
-
-    switch (direccion){
-    case Direccion::Arriba:{
-        int filaDestino = (y - movimiento) / mapa->obtenerTamanoCelda();
-        int columnaIzquierda = x / mapa->obtenerTamanoCelda();;
-        int columnaDerecha = (x + tamanoJugador - 1) / mapa->obtenerTamanoCelda();;
-
-        if (!mapa->esObstaculo(filaDestino, columnaIzquierda) &&!mapa->esObstaculo(filaDestino, columnaDerecha))
-        {
-            personaje->moveBy(0, -movimiento);
-        }
-        break;
+    if (jugador != nullptr) {
+        jugador->soltarTecla(evento);
     }
 
-    case Direccion::Abajo:{
-        int filaDestino = (y + tamanoJugador + movimiento-2) / mapa->obtenerTamanoCelda();
-        int columnaIzquierda = x / mapa->obtenerTamanoCelda();
-        int columnaDerecha = (x + tamanoJugador - 1) / mapa->obtenerTamanoCelda();
-
-        if (!mapa->esObstaculo(filaDestino, columnaIzquierda) &&!mapa->esObstaculo(filaDestino, columnaDerecha)){
-            personaje->moveBy(0, movimiento);
-        }
-        break;
-    }
-
-    case Direccion::Derecha:{
-        int columnaDestino = (x + tamanoJugador + movimiento-2) / mapa->obtenerTamanoCelda();
-        int filaSuperior = y / mapa->obtenerTamanoCelda();
-        int filaInferior = (y + tamanoJugador - 1) / mapa->obtenerTamanoCelda();
-
-        if (!mapa->esObstaculo(filaSuperior, columnaDestino) && !mapa->esObstaculo(filaInferior, columnaDestino)){
-            personaje->moveBy(movimiento, 0);
-        }
-        break;
-    }
-
-    case Direccion::Izquierda:{
-        int columnaDestino = (x - movimiento) / mapa->obtenerTamanoCelda();
-        int filaSuperior = y / mapa->obtenerTamanoCelda();
-        int filaInferior = (y + tamanoJugador - 1) / mapa->obtenerTamanoCelda();
-
-        if (!mapa->esObstaculo(filaSuperior, columnaDestino) &&!mapa->esObstaculo(filaInferior, columnaDestino)) {
-            personaje->moveBy(-movimiento, 0);
-        }
-        break;
-    }
-
-    case Direccion::Null:{
-        break;
-    }
+    if (!evento->isAccepted()) {
+        QGraphicsView::keyReleaseEvent(evento);
     }
 }
 
 
 
 void VentanaJuego::construirMapa(){
+    if (mapa == nullptr || escena == nullptr) {
+        return;
+    }
+
     for (int fila = 0; fila <mapa->obtenerFilas();  fila++){
         for (int columna = 0; columna < mapa->obtenerColumnas(); columna++) {
-                mapa->obtenerCelda(fila, columna)->dibujar(escena,columna * mapa->obtenerTamanoCelda(),  fila * mapa->obtenerTamanoCelda(), mapa->obtenerTamanoCelda() );
+                Celda* celda = mapa->obtenerCelda(fila, columna);
+                if (celda != nullptr) {
+                    celda->dibujar(escena, columna * mapa->obtenerTamanoCelda(),
+                                   fila * mapa->obtenerTamanoCelda(), mapa->obtenerTamanoCelda());
+                }
 
         }
     }
@@ -165,9 +106,15 @@ void VentanaJuego::construirMapa(){
 
 
 
-
-
 void VentanaJuego::colocarBomba(){
+    if (jugador == nullptr || escena == nullptr || mapa == nullptr) {
+        return;
+    }
+
+    QGraphicsRectItem* personaje = jugador->obtenerPersonaje();
+    if (personaje == nullptr) {
+        return;
+    }
 
     int fila = personaje->pos().y();
     int columna = personaje->pos().x();
@@ -178,6 +125,10 @@ void VentanaJuego::colocarBomba(){
 
 
 void VentanaJuego::actualizarBombas(){
+    if (mapa == nullptr) {
+        return;
+    }
+
     while (bombas.primeraBombaVencida()){
 
         int x = 0;
@@ -194,9 +145,25 @@ void VentanaJuego::actualizarBombas(){
 
 
 void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
+    if (mapa == nullptr || escena == nullptr || tamanoCelda <= 0 ||
+        alcance <= 0 || tamanoJugador <= 0) {
+        return;
+    }
+
     x=x+tamanoJugador/4;
     y=y+tamanoJugador/4;
+    const int centroY = y + tamanoJugador / 4;
+    const int centroX = x + tamanoJugador / 4;
+    const int filaBomba = centroY / tamanoCelda;
+    const int columnaBomba = centroX / tamanoCelda;
+    if (mapa->obtenerCelda(filaBomba, columnaBomba) == nullptr) {
+        return;
+    }
+
     QGraphicsRectItem* flamaCentral = escena->addRect(  0, 0, VentanaJuego::tamanoFlama, VentanaJuego::tamanoFlama,  QPen(Qt::red), QBrush(Qt::yellow));
+    if (flamaCentral == nullptr) {
+        return;
+    }
     flamaCentral->setPos(x, y);
     QTimer::singleShot(500, this, [flamaCentral]() {
         delete flamaCentral;
@@ -204,14 +171,6 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
     bool direccionValida[4] = {true, true, true, true};
     int direccionAlcance[4] = {0, 0, 0, 0};
 
-
-
-    int centroY = y + VentanaJuego::tamanoJugador / 4;
-    int centroX = x + VentanaJuego::tamanoJugador / 4;
-
-
-    int filaBomba = centroY / mapa->obtenerTamanoCelda();
-    int columnaBomba = centroX / mapa->obtenerTamanoCelda();
 
 
     int retrasoPorAnillo = 100;
@@ -225,8 +184,11 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
         //NORTE
         if (direccionValida[0]){
             int filaFlama = filaBomba - distancia;
-            Celda* bomba= mapa->obtenerCelda(filaFlama, columnaBomba);
-            if (bomba->esObstaculo())
+            Celda* bomba = mapa->obtenerCelda(filaFlama, columnaBomba);
+            if (bomba == nullptr) {
+                direccionValida[0] = false;
+            }
+            else if (bomba->esObstaculo())
             {
                 bomba->recibirExplosion();
                 direccionValida[0] = false;
@@ -247,8 +209,11 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
         if (direccionValida[1])
         {
             int filaFlama = filaBomba + distancia;
-            Celda* bomba= mapa->obtenerCelda(filaFlama, columnaBomba);
-            if (bomba->esObstaculo())
+            Celda* bomba = mapa->obtenerCelda(filaFlama, columnaBomba);
+            if (bomba == nullptr) {
+                direccionValida[1] = false;
+            }
+            else if (bomba->esObstaculo())
             {
                 bomba->recibirExplosion();
                 direccionValida[1] = false;
@@ -267,8 +232,11 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
         if (direccionValida[2])
         {
             int columnaFlama = columnaBomba - distancia;
-            Celda* bomba= mapa->obtenerCelda(filaBomba, columnaFlama);
-            if (bomba->esObstaculo())
+            Celda* bomba = mapa->obtenerCelda(filaBomba, columnaFlama);
+            if (bomba == nullptr) {
+                direccionValida[2] = false;
+            }
+            else if (bomba->esObstaculo())
             {
                 bomba->recibirExplosion();
                 direccionValida[2] = false;
@@ -286,8 +254,11 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
         //ESTE
         if (direccionValida[3]){
             int columnaFlama = columnaBomba + distancia;
-            Celda* bomba= mapa->obtenerCelda(filaBomba, columnaFlama);
-            if (bomba->esObstaculo())
+            Celda* bomba = mapa->obtenerCelda(filaBomba, columnaFlama);
+            if (bomba == nullptr) {
+                direccionValida[3] = false;
+            }
+            else if (bomba->esObstaculo())
             {
                 bomba->recibirExplosion();
                 direccionValida[3] = false;
@@ -349,6 +320,10 @@ void VentanaJuego::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
 }
 
 bool VentanaJuego::reaccionEnCadena(int filaFlama, int columnaFlama, int retraso){
+    if (mapa == nullptr || mapa->obtenerCelda(filaFlama, columnaFlama) == nullptr) {
+        return false;
+    }
+
     int xBombaEncontrada = 0;
     int yBombaEncontrada = 0;
     int alcanceBombaEncontrada = 0;

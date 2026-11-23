@@ -24,7 +24,7 @@ Mapa::~Mapa()//destructor
 void Mapa::crearMapa()
 {
 
-    if (mapa != nullptr)
+    if (mapa != nullptr || filas <= 0 || columnas <= 0)
     {
         return;
     }
@@ -32,8 +32,7 @@ void Mapa::crearMapa()
 
 
 
-    mapa = new Celda*[filas];
-    mapa = new Celda*[filas];
+    mapa = new Celda*[filas]{};
 
     for (int fila = 0; fila < filas; fila++)
     {
@@ -60,9 +59,13 @@ void Mapa::crearMapa()
 
 bool Mapa::esObstaculo(int fila, int columna) const
 {
-    if (fila < 0  || fila >= filas ||
+    if (mapa == nullptr || fila < 0  || fila >= filas ||
         columna < 0 || columna >= columnas)
     {
+        return true;
+    }
+
+    if (mapa[fila] == nullptr) {
         return true;
     }
 
@@ -70,6 +73,15 @@ bool Mapa::esObstaculo(int fila, int columna) const
 }
 
 Celda* Mapa::obtenerCelda(int fila, int columna){
+    if (mapa == nullptr || fila < 0 || fila >= filas ||
+        columna < 0 || columna >= columnas) {
+        return nullptr;
+    }
+
+    if (mapa[fila] == nullptr) {
+        return nullptr;
+    }
+
     return &mapa[fila][columna];
 }
 
