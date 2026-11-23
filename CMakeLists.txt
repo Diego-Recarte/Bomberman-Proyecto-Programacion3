@@ -7,13 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 add_executable(Bomberman_22541083_22441370 main.cpp
-    ventanajuego.cpp ventanajuego.h
+    ventanajuego.h ventanajuego.cpp
     MapaYCasillas/mapa.h MapaYCasillas/mapa.cpp
     boton.h boton.cpp
     Bombas/bomba.h Bombas/bomba.cpp
     Bombas/nodobomba.h Bombas/nodobomba.cpp
     Bombas/colabomba.h Bombas/colabomba.cpp
-    MapaYCasillas/celda.h MapaYCasillas/celda.cpp)
+    MapaYCasillas/celda.h MapaYCasillas/celda.cpp
+    Jugador/jugador.h Jugador/jugador.cpp)
 target_link_libraries(Bomberman_22541083_22441370 PRIVATE Qt6::Widgets)
 
 include(GNUInstallDirs)

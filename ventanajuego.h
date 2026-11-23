@@ -4,6 +4,7 @@
 
 #include "MapaYCasillas/mapa.h"
 #include "Bombas/colabomba.h"
+#include "Jugador/jugador.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
@@ -14,7 +15,7 @@ class VentanaJuego : public QGraphicsView
 {
 public:
     VentanaJuego();
-
+     Mapa* mapa = nullptr;
 
 protected:
     void keyPressEvent(QKeyEvent* evento) override; //KeyPress
@@ -24,36 +25,15 @@ private:
 
     ~VentanaJuego();
 
-    void actualizarMovimiento();
+    Jugador* jugador = nullptr;
     QGraphicsScene* escena = nullptr;
-    QGraphicsRectItem* personaje = nullptr;
 
     QTimer* temporizadorMovimiento = nullptr;
 
-
-
-
-
-    enum class Direccion{//enum
-        Arriba,
-        Abajo,
-        Izquierda,
-        Derecha,
-        Null
-    };
-    Direccion direccion = Direccion::Null;
-
-
-
-    int movimiento = 5;
-    int tamanoJugador = 40;
-
-
     void colocarBomba();
 
-    Mapa* mapa = nullptr;
-    void construirMapa();
 
+    void construirMapa();
 
     //bombas
 
@@ -61,7 +41,8 @@ private:
     void actualizarBombas();
 
     void crearExplosion(int x, int y, int tamanoCelda,int alcance);
-
+    // El jugador se crea dentro del constructor; no existe aún al inicializar miembros.
+    int tamanoJugador = 0;
     int tamanoFlama = 20;
 
      bool reaccionEnCadena( int filaFlama, int columnaBomba,int retraso);
