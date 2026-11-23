@@ -13,8 +13,10 @@ add_executable(Bomberman_22541083_22441370 main.cpp
     Bombas/bomba.h Bombas/bomba.cpp
     Bombas/nodobomba.h Bombas/nodobomba.cpp
     Bombas/colabomba.h Bombas/colabomba.cpp
+    Bombas/sistemaexplosion.h Bombas/sistemaexplosion.cpp
     MapaYCasillas/celda.h MapaYCasillas/celda.cpp
-    Jugador/jugador.h Jugador/jugador.cpp)
+    Jugador/jugador.h Jugador/jugador.cpp
+    Enemigos/enemigo.h Enemigos/enemigo.cpp)
 target_link_libraries(Bomberman_22541083_22441370 PRIVATE Qt6::Widgets)
 
 include(GNUInstallDirs)
