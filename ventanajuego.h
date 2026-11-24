@@ -1,14 +1,14 @@
 #ifndef VENTANAJUEGO_H
 #define VENTANAJUEGO_H
 
-#include "MapaYCasillas/mapa.h"
-#include "jugador.h"
-
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QKeyEvent>
 #include <QTimer>
+
+class ControladorJuego;
+class QGraphicsTextItem;
 
 class VentanaJuego : public QGraphicsView
 {
@@ -16,35 +16,27 @@ public:
     VentanaJuego();
     ~VentanaJuego() override;
 
-    Mapa* mapa = nullptr;
-
 protected:
     void keyPressEvent(QKeyEvent* evento) override;
     void keyReleaseEvent(QKeyEvent* evento) override;
 
 private:
-    Jugador* jugador = nullptr;
     QGraphicsScene* escena = nullptr;
+    ControladorJuego* controlador = nullptr;
     QTimer* temporizadorMovimiento = nullptr;
 
-    int tamanoJugador = 40;
-    int tamanoFlama = 20;
-    int tamanoItemAlcance = 2;
+    enum class EstadoPartida { EnCurso, Derrota, Victoria };
+    EstadoPartida estadoPartida = EstadoPartida::EnCurso;
 
-    void construirMapa();
-    void actualizarMovimiento();
-    void revisarItemsJugador();
+    QGraphicsRectItem* barraVidaFondo = nullptr;
+    QGraphicsRectItem* barraVida = nullptr;
+    QGraphicsTextItem* textoVida = nullptr;
+    QGraphicsTextItem* textoResultado = nullptr;
 
-    void colocarBomba();
-    void actualizarBombas();
-
-    void crearExplosion(int x, int y, int tamanoCelda, int alcance);
-
-    bool reaccionEnCadena(
-        int filaFlama,
-        int columnaFlama,
-        int retraso
-        );
+    void crearInterfaz();
+    void actualizarPartida();
+    void actualizarInterfazVida();
+    void finalizarPartida(bool victoria);
 };
 
 #endif // VENTANAJUEGO_H

@@ -23,6 +23,7 @@ public:
 
     void cambiarAlcance( int i);
     int obtenerAlcance() const;
+    bool seSuperponeCon(qreal x,qreal y,qreal ancho,qreal alto, int anchoBomba, int altoBomba) const;
 
 private:
     int fila;

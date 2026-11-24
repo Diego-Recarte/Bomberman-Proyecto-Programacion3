@@ -6,7 +6,8 @@
 
 #include "MapaYCasillas/mapa.h"
 #include "Bombas/colabomba.h"
-#include "pilaitem.h"
+#include "../Item/tipoitem.h"
+#include "../Item/pilaitem.h"
 
 enum class Direccion
 {
@@ -20,7 +21,8 @@ enum class Direccion
 class Jugador
 {
 public:
-    Jugador(int x, int y, int tamanio, int velocidadInicial);
+    Jugador(int x, int y, int tamanio, int velocidadInicial, Mapa* mapa = nullptr);
+    ~Jugador();
 
     QGraphicsRectItem* obtenerFigura();
     int obtenerVelocidad() const;
@@ -32,16 +34,23 @@ public:
 
     void establecerDireccion(Direccion nuevaDireccion);
     Direccion obtenerDireccion() const;
-    void actualizarMovimiento(Mapa* mapa, int tamanoCelda);
+    void actualizarMovimiento(Mapa* mapa, int tamanoCelda, const ColaBomba* bombasActivas = nullptr);
 
 
     bool puedeColocarBomba() const;
     void bombaColocada();
     void bombaExplotada();
 
+    bool calcularCasillaInteraccion( int& fila,int& columna, int dx = 0,int dy = 0) const;
+
     ColaBomba& obtenerBombas();
-    int obtenerVidaMaxima();
-    int obtenerVidaActual();
+    int obtenerVidaMaxima() const;
+    int obtenerVidaActual() const;
+    int obtenerVida() const;
+    void recibirDanio(int cantidad);
+    void actualizarTemporizadores(int milisegundos);
+    int obtenerFilaActual() const;
+    int obtenerColumnaActual() const;
     void aumentarVelocidad();
 
     void recogerItem(TipoItem item);
@@ -57,11 +66,13 @@ private:
     void aumentarVida();
     void curar();
     QGraphicsRectItem* figura;
+    Mapa* mapa = nullptr;
     int velocidad;
     int bombasMaximas;
     int bombasActivas;
     int vidaActual;
     int vidaMaxima;
+    int cooldownDanioMs = 0;
     int tamanioJugador=40;
     int alcance=3;
 
@@ -70,6 +81,8 @@ private:
     Direccion direccion;
 
     ColaBomba  bombas;
-};
+    bool casillaLibre(Mapa* mapa, int fila, int columna) const;
+
+    };
 
 #endif

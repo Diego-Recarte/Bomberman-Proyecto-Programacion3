@@ -7,7 +7,7 @@
 #include <QPen>
 #include <QBrush>
 
-#include "../TipoItem.h"
+#include "../Item/tipoitem.h"
 enum Tipo{
     vacio,
     pared,
@@ -58,3 +58,4 @@ private:
 
 
 #endif // CELDA_H
+
