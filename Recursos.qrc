@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="caja.png">Assets/Tiles/caja.png</file>
+        <file alias="pared.png">Assets/Tiles/pared.png</file>
+        <file alias="piso.png">Assets/Tiles/piso.png</file>
+        <file alias="ladrillosfondo.jpg">Assets/Backgrounds/ladrillos.jpg</file>
+    </qresource>
+</RCC>
