@@ -1,235 +1,146 @@
 #include "sistemaexplosion.h"
 #include "colabomba.h"
+#include "../Jugador/jugador.h"
 #include "../Enemigos/gestorenemigos.h"
 #include "../MapaYCasillas/mapa.h"
 #include "../MapaYCasillas/celda.h"
+#include "../Item/tipoitem.h"
 #include <QGraphicsRectItem>
 #include <QGraphicsScene>
 #include <QBrush>
 #include <QPen>
 #include <QTimer>
 
-void SistemaExplosion::configurar(Mapa* mapa, QGraphicsScene* escena, ColaBomba* bombas, int tamanoJugador,
-                                  GestorEnemigos* enemigos)
+void SistemaExplosion::configurar(Mapa* mapa, QGraphicsScene* escena,
+                                  ColaBomba* bombas, int tamanoJugador,
+                                  GestorEnemigos* enemigos, Jugador* jugador)
 {
     this->mapa = mapa;
     this->escena = escena;
     this->bombas = bombas;
     this->tamanoJugador = tamanoJugador;
     this->enemigos = enemigos;
+    this->jugador = jugador;
 }
-void SistemaExplosion::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
+
+void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance)
+{
     if (mapa == nullptr || escena == nullptr || tamanoCelda <= 0 ||
         alcance <= 0 || tamanoJugador <= 0) {
         return;
     }
 
-    x=x+tamanoJugador/4;
-    y=y+tamanoJugador/4;
-    const int centroY = y + tamanoJugador / 4;
+    x += tamanoJugador / 4;
+    y += tamanoJugador / 4;
     const int centroX = x + tamanoJugador / 4;
+    const int centroY = y + tamanoJugador / 4;
     const int filaBomba = centroY / tamanoCelda;
     const int columnaBomba = centroX / tamanoCelda;
     if (mapa->obtenerCelda(filaBomba, columnaBomba) == nullptr) {
         return;
     }
 
-    QGraphicsRectItem* flamaCentral = escena->addRect(  0, 0, tamanoFlama, tamanoFlama,  QPen(Qt::red), QBrush(Qt::yellow));
-    if (flamaCentral == nullptr) {
-        return;
-    }
-    flamaCentral->setPos(x, y);
+    QGraphicsRectItem* centro = escena->addRect(
+        0, 0, tamanoFlama, tamanoFlama, QPen(Qt::red), QBrush(Qt::yellow));
+    centro->setPos(x, y);
     if (enemigos != nullptr) {
         enemigos->recibirExplosionEnCasilla(filaBomba, columnaBomba);
     }
-    QTimer::singleShot(500, this, [flamaCentral]() {
-        delete flamaCentral;
-    });
-    bool direccionValida[4] = {true, true, true, true};
-    int direccionAlcance[4] = {0, 0, 0, 0};
+    QTimer::singleShot(500, this, [centro]() { delete centro; });
 
+    const int cambioFila[4] = {-1, 1, 0, 0};
+    const int cambioColumna[4] = {0, 0, -1, 1};
+    const int retrasoPorAnillo = 100;
 
-
-    int retrasoPorAnillo = 100;
-
-    for (int i = 0; i < alcance; i++)
-    {
-        int distancia = i + 1;
-        int desplazamiento = tamanoCelda * (i + 1);
-        int retraso = retrasoPorAnillo * i;
-        //Validacion para no dibujar la explosion donde no corresponde
-        //NORTE
-        if (direccionValida[0]){
-            int filaFlama = filaBomba - distancia;
-            Celda* bomba = mapa->obtenerCelda(filaFlama, columnaBomba);
-            if (bomba == nullptr) {
-                direccionValida[0] = false;
+    // Cada direccion conserva su propio alcance porque un item puede extenderlo.
+    for (int direccion = 0; direccion < 4; ++direccion) {
+        int alcanceDireccion = alcance;
+        for (int distancia = 1; distancia <= alcanceDireccion; ++distancia) {
+            const int filaFlama = filaBomba + cambioFila[direccion] * distancia;
+            const int columnaFlama = columnaBomba + cambioColumna[direccion] * distancia;
+            Celda* celda = mapa->obtenerCelda(filaFlama, columnaFlama);
+            if (celda == nullptr) {
+                break;
             }
-            else if (bomba->esObstaculo())
-            {
-                bomba->recibirExplosion();
-                direccionValida[0] = false;
-            }
-            else
-            {
-                if (enemigos != nullptr) {
-                    enemigos->recibirExplosionEnCasilla(filaFlama, columnaBomba);
-                }
-                if (reaccionEnCadena(filaFlama, columnaBomba, retrasoPorAnillo * distancia)) {
-                    direccionValida[0] = false;
+
+            const int xFlama = x + cambioColumna[direccion] * tamanoCelda * distancia;
+            const int yFlama = y + cambioFila[direccion] * tamanoCelda * distancia;
+            bool continuar = true;
+            bool mostrarFlama = true;
+
+            if (celda->esObstaculo()) {
+                celda->recibirExplosion();
+                const bool destruida = celda->estaDestruida();
+                const TipoItem item = celda->obtenerItem();
+                if (!destruida) {
+                    continuar = false;
+                    mostrarFlama = false;
                 } else {
-
-
-
-                    direccionAlcance[0]++;
+                    if (item == TipoItem::Alcance) {
+                        alcanceDireccion += tamanoItemAlcance;
+                    } else if (item != TipoItem::Ninguno) {
+                        celda->setItemDisponible();
+                    }
+                    if (item != TipoItem::Alcance) {
+                        continuar = false;
+                    }
                 }
-            }
-        }
-        //SUR
-        if (direccionValida[1])
-        {
-            int filaFlama = filaBomba + distancia;
-            Celda* bomba = mapa->obtenerCelda(filaFlama, columnaBomba);
-            if (bomba == nullptr) {
-                direccionValida[1] = false;
-            }
-            else if (bomba->esObstaculo())
-            {
-                bomba->recibirExplosion();
-                direccionValida[1] = false;
-            }
-            else
-            {
+            } else {
                 if (enemigos != nullptr) {
-                    enemigos->recibirExplosionEnCasilla(filaFlama, columnaBomba);
+                    enemigos->recibirExplosionEnCasilla(filaFlama, columnaFlama);
                 }
-                if (reaccionEnCadena(filaFlama, columnaBomba, retrasoPorAnillo * distancia)) {
-                    direccionValida[1] = false;
-                } else {
-
-                    direccionAlcance[1]++;
+                if (reaccionEnCadena(filaFlama, columnaFlama,
+                                     retrasoPorAnillo * distancia)) {
+                    continuar = false;
                 }
             }
-        }
-        //OESTE
-        if (direccionValida[2])
-        {
-            int columnaFlama = columnaBomba - distancia;
-            Celda* bomba = mapa->obtenerCelda(filaBomba, columnaFlama);
-            if (bomba == nullptr) {
-                direccionValida[2] = false;
-            }
-            else if (bomba->esObstaculo())
-            {
-                bomba->recibirExplosion();
-                direccionValida[2] = false;
-            }
-            else
-            {
-                if (enemigos != nullptr) {
-                    enemigos->recibirExplosionEnCasilla(filaBomba, columnaFlama);
-                }
-                if (reaccionEnCadena(filaBomba, columnaFlama, retrasoPorAnillo * distancia)) {
-                    direccionValida[2] = false;
-                } else {
 
-
-                    direccionAlcance[2]++;
-                }
-            }
-        }
-        //ESTE
-        if (direccionValida[3]){
-            int columnaFlama = columnaBomba + distancia;
-            Celda* bomba = mapa->obtenerCelda(filaBomba, columnaFlama);
-            if (bomba == nullptr) {
-                direccionValida[3] = false;
-            }
-            else if (bomba->esObstaculo())
-            {
-                bomba->recibirExplosion();
-                direccionValida[3] = false;
-            }
-            else
-            {
-                if (enemigos != nullptr) {
-                    enemigos->recibirExplosionEnCasilla(filaBomba, columnaFlama);
-                }
-                if (reaccionEnCadena(filaBomba, columnaFlama, retrasoPorAnillo * distancia)) {
-                    direccionValida[3] = false;
-                } else {
-
-                    direccionAlcance[3]++;
-                }
-            }
-        }
-
-        //Dibujando explosion una vez que se valida la explosion en caso contrario no se dibuja nada
-        QTimer::singleShot(retraso, this, [this, x, y, desplazamiento, i, direccionAlcance](){
-            //NORTE
-
-            if (direccionAlcance[0] > i){
-                QGraphicsRectItem* flama = escena->addRect(0, 0,   tamanoFlama, tamanoFlama,  QPen(Qt::red),  QBrush(Qt::yellow));
-
-                flama->setPos(x, y - desplazamiento);
-
-                QTimer::singleShot(500, this, [flama](){
-                    delete flama;
+            if (mostrarFlama) {
+                QTimer::singleShot(retrasoPorAnillo * (distancia - 1), this,
+                                   [this, xFlama, yFlama]() {
+                    QGraphicsRectItem* flama = escena->addRect(
+                        0, 0, tamanoFlama, tamanoFlama,
+                        QPen(Qt::red), QBrush(Qt::yellow));
+                    flama->setPos(xFlama, yFlama);
+                    QTimer::singleShot(500, this, [flama]() { delete flama; });
                 });
             }
-            //SUR
-            if (direccionAlcance[1] > i){
-                QGraphicsRectItem* flama = escena->addRect( 0, 0,tamanoFlama, tamanoFlama,QPen(Qt::red),QBrush(Qt::yellow) );
 
-                flama->setPos(x, y + desplazamiento);
-
-                QTimer::singleShot(500, this, [flama](){ delete flama; });
+            if (!continuar) {
+                break;
             }
-            //OESTE
-            if (direccionAlcance[2] > i){
-                QGraphicsRectItem* flama = escena->addRect(0, 0, tamanoFlama, tamanoFlama, QPen(Qt::red),QBrush(Qt::yellow));
-
-                flama->setPos(x - desplazamiento, y);
-
-                QTimer::singleShot(500, this, [flama](){
-                    delete flama;
-                });
-            }
-            //ESTE
-            if (direccionAlcance[3] > i){
-                QGraphicsRectItem* flama = escena->addRect(0, 0, tamanoFlama, tamanoFlama, QPen(Qt::red),QBrush(Qt::yellow));
-
-                flama->setPos(x + desplazamiento, y);
-
-                QTimer::singleShot(500, this, [flama]() {
-                    delete flama;
-                });
-            }
-        });
+        }
     }
 }
 
-bool SistemaExplosion::reaccionEnCadena(int filaFlama, int columnaFlama, int retraso){
-    if (mapa == nullptr || mapa->obtenerCelda(filaFlama, columnaFlama) == nullptr) {
+bool SistemaExplosion::reaccionEnCadena(int filaFlama, int columnaFlama, int retraso)
+{
+    if (mapa == nullptr || bombas == nullptr ||
+        mapa->obtenerCelda(filaFlama, columnaFlama) == nullptr) {
         return false;
     }
 
-    int xBombaEncontrada = 0;
-    int yBombaEncontrada = 0;
-    int alcanceBombaEncontrada = 0;
-
-
-    if (bombas->localizarBomba( filaFlama, columnaFlama,   xBombaEncontrada,yBombaEncontrada, alcanceBombaEncontrada, mapa->obtenerTamanoCelda(),tamanoJugador)){
-
-        QTimer::singleShot(retraso,this,[this, xBombaEncontrada, yBombaEncontrada, alcanceBombaEncontrada, filaFlama, columnaFlama]() {
-            crearExplosion(xBombaEncontrada,yBombaEncontrada,mapa->obtenerTamanoCelda(),alcanceBombaEncontrada);
-            bombas->eliminarBombaEn( filaFlama,columnaFlama, mapa->obtenerTamanoCelda(),tamanoJugador );
-
-            });
-
-        return true;
+    int xBomba = 0;
+    int yBomba = 0;
+    int alcanceBomba = 0;
+    if (!bombas->localizarBomba(filaFlama, columnaFlama, xBomba, yBomba,
+                                alcanceBomba, mapa->obtenerTamanoCelda(),
+                                tamanoJugador)) {
+        return false;
     }
 
-    return false;
+    QTimer::singleShot(retraso, this,
+                       [this, xBomba, yBomba, alcanceBomba,
+                        filaFlama, columnaFlama]() {
+        const int tamanoCelda = mapa->obtenerTamanoCelda();
+        if (bombas->eliminarBombaEn(filaFlama, columnaFlama,
+                                    tamanoCelda, tamanoJugador)) {
+            if (jugador != nullptr) {
+                jugador->bombaExplotada();
+            }
+            crearExplosion(xBomba, yBomba, tamanoCelda, alcanceBomba);
+        }
+    });
+    return true;
 }
 

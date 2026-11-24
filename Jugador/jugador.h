@@ -1,54 +1,89 @@
+
 #ifndef JUGADOR_H
 #define JUGADOR_H
 
 #include <QGraphicsRectItem>
-#include <QKeyEvent>
-#include "../MapaYCasillas/mapa.h"
 
-class ColaBomba;
+#include "MapaYCasillas/mapa.h"
+#include "Bombas/colabomba.h"
+#include "../Item/tipoitem.h"
+#include "../Item/pilaitem.h"
+
+enum class Direccion
+{
+    Arriba,
+    Abajo,
+    Izquierda,
+    Derecha,
+    Null
+};
 
 class Jugador
 {
 public:
-    Jugador(Mapa* mapa);
+    Jugador(int x, int y, int tamanio, int velocidadInicial, Mapa* mapa = nullptr);
+    ~Jugador();
 
-    void presionarTecla(QKeyEvent* evento);
-    void soltarTecla(QKeyEvent* evento);
-    int obtenerTamanio();
-    void actualizarMovimiento(const ColaBomba* bombas = nullptr);
-    void actualizarTemporizadores(int milisegundos);
-    void recibirDanio(int cantidad);
-    int obtenerVida() const;
+    QGraphicsRectItem* obtenerFigura();
+    int obtenerVelocidad() const;
+
+    void aumentarBombasMaximas();
+    void aumentarVidas();
+
+    int obtenerAlcance() const;
+
+    void establecerDireccion(Direccion nuevaDireccion);
+    Direccion obtenerDireccion() const;
+    void actualizarMovimiento(Mapa* mapa, int tamanoCelda,
+                              const ColaBomba* bombasActivas = nullptr);
+
+
+    bool puedeColocarBomba() const;
+    void bombaColocada();
+    void bombaExplotada();
+
+    ColaBomba& obtenerBombas();
     int obtenerVidaMaxima() const;
+    int obtenerVidaActual() const;
+    int obtenerVida() const;
+    void recibirDanio(int cantidad);
+    void actualizarTemporizadores(int milisegundos);
     int obtenerFilaActual() const;
     int obtenerColumnaActual() const;
+    void aumentarVelocidad();
 
-    QGraphicsRectItem* obtenerPersonaje();
+    void recogerItem(TipoItem item);
+    PilaItem& obtenerItems();
+
+
+
+
+
 
 private:
 
-    enum class Direccion {
-        Arriba,
-        Abajo,
-        Izquierda,
-        Derecha,
-        Null
-    };
-
-    Direccion direccion = Direccion::Null;
-
-    QGraphicsRectItem* personaje = nullptr;
+    void aumentarVida();
+    void curar();
+    QGraphicsRectItem* figura;
     Mapa* mapa = nullptr;
-
-    int movimiento = 5;
-    int vidaMaxima = 2;
-    int vida = vidaMaxima;
-    int tamanoJugador = 40;
+    int velocidad;
+    int bombasMaximas;
+    int bombasActivas;
+    int vidaActual;
+    int vidaMaxima;
     int cooldownDanioMs = 0;
+    int tamanioJugador=40;
+    int alcance=3;
 
-    bool casillaLibre(int fila, int columna, const ColaBomba* bombas,
+    PilaItem items;
+
+    Direccion direccion;
+
+    ColaBomba  bombas;
+
+    bool casillaLibre(Mapa* mapa, int fila, int columna, int tamanoCelda,
+                      const ColaBomba* bombasActivas,
                       int filaActual, int columnaActual) const;
-
 };
 
 #endif

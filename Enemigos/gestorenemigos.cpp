@@ -2,7 +2,7 @@
 
 #include "enemigoAleatorio.h"
 #include "../MapaYCasillas/mapa.h"
-#include "../Jugador/jugador.h"
+#include "jugador.h"
 #include "../Bombas/colabomba.h"
 #include <QGraphicsScene>
 

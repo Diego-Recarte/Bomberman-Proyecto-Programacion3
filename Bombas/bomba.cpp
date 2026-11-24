@@ -30,7 +30,7 @@ void Bomba::dibujar(QGraphicsScene* escena, int tamanoCelda){
     }
 
     forma = escena->addRect(0, 0,  40, 40 );
-
+    forma->setBrush(QBrush(Qt::black));
     forma->setPos(columna, fila);
 }
 
