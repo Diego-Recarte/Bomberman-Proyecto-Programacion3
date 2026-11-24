@@ -16,7 +16,7 @@ public:
     bool primeraBombaVencida() const;
     void eliminar();
     void vaciar();
-    void agregar(int fila, int columna, int tiempo,  QGraphicsScene* escena);
+    void agregar(int fila, int columna, int tiempo,int alcance,  QGraphicsScene* escena);
 
     bool existeBombaEn(int fila, int columna) const;
 
@@ -27,8 +27,7 @@ private:
     NodoBomba* primero = nullptr;
     NodoBomba* ultimo = nullptr;
     int cantidad = 0;
-    int maximoBombas=3;
-    int alcance=3;
+
 };
 
 #endif // COLABOMBA_H
