@@ -42,8 +42,7 @@ void ColaBomba::vaciar(){
 }
 
 
-void ColaBomba::agregar(int fila, int columna, int tiempo,  QGraphicsScene* escena){
-    if (cantidad<maximoBombas){
+void ColaBomba::agregar(int fila, int columna, int tiempo, int alcance, QGraphicsScene* escena){
 
         NodoBomba* nueva= new NodoBomba(fila, columna, tiempo, alcance);
         nueva->bomba.dibujar(escena, 40);
@@ -57,7 +56,7 @@ void ColaBomba::agregar(int fila, int columna, int tiempo,  QGraphicsScene* esce
 
 
         cantidad++;
-    }
+
 
 }
 bool ColaBomba::primeraBombaVencida() const{

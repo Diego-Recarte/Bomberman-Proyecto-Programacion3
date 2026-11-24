@@ -1,18 +1,44 @@
+# Carpetas de compilacion
 build*/
-build-*/
+cmake-build-*/
+debug/
+release/
+
+# Configuracion local de Qt Creator
+.qtcreator/
+*.user
+*.user.*
+*.autosave
+*.autosave.*
+
+# Configuracion local y archivos generados de CMake
+CMakeUserPresets.json
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# Objetos y binarios generados
 *.o
 *.obj
 *.exe
 *.dll
 *.so
+*.so.*
 *.dylib
-*.user
-*.user.*
-*.autosave
-*.autosave.*
+*.a
+*.lib
+
+# Archivos generados por Qt
+*.moc
 moc_*.cpp
+moc_*.h
 qrc_*.cpp
 ui_*.h
+*_autogen/
+
+# Archivos generados por qmake y Make
 .qmake.stash
+.qmake.cache
 Makefile*
-CMakeLists.txt.user
