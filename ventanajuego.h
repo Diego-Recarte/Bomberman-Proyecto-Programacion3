@@ -4,6 +4,7 @@
 
 #include "mapa.h"
 #include "colabomba.h"
+#include "Jugador.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
@@ -26,26 +27,18 @@ private:
 
     void actualizarMovimiento();
     QGraphicsScene* escena = nullptr;
-    QGraphicsRectItem* personaje = nullptr;
+
 
     QTimer* temporizadorMovimiento = nullptr;
 
+    Jugador* jugador;
+
+    void revisarItemsJugador();
 
 
 
 
-    enum class Direccion{//enum
-        Arriba,
-        Abajo,
-        Izquierda,
-        Derecha,
-        Null
-    };
-    Direccion direccion = Direccion::Null;
 
-
-
-    int movimiento = 5;
     int tamanoJugador = 40;
 
 
@@ -57,12 +50,13 @@ private:
 
     //bombas
 
-    ColaBomba bombas;
+
     void actualizarBombas();
 
     void crearExplosion(int x, int y, int tamanoCelda,int alcance);
 
     int tamanoFlama = 20;
+    int tamanoItemAlcance =2;
 
      bool reaccionEnCadena( int filaFlama, int columnaBomba,int retraso);
 };
