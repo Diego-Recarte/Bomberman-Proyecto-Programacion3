@@ -34,7 +34,7 @@ public:
 
     void establecerDireccion(Direccion nuevaDireccion);
     Direccion obtenerDireccion() const;
-    void actualizarMovimiento(Mapa* mapa, int tamanoCelda, const ColaBomba* bombasActivas = nullptr);
+    void actualizarMovimiento(Mapa* mapa, int tamanoCelda);
 
 
     bool puedeColocarBomba() const;

@@ -56,7 +56,7 @@ bool ControladorJugador::procesarTeclaLiberada(QKeyEvent* evento){
 
 void ControladorJugador::actualizarMovimiento(){
     if (jugador != nullptr && mapa != nullptr) {
-        jugador->actualizarMovimiento(mapa, mapa->obtenerTamanoCelda(), &jugador->obtenerBombas());
+        jugador->actualizarMovimiento(mapa, mapa->obtenerTamanoCelda());
     }
 }
 
