@@ -37,43 +37,55 @@ void Mapa::crearMapa()
 
         for (int columna = 0; columna < columnas; columna++){
             bool contorno = fila == 0 || fila == filas - 1 || columna == 0 || columna == columnas - 1;
-           /* bool pilar = fila % 2 == 0 and columna % 2 == 0;
+            bool pilar = fila % 2 == 0 and columna % 2 == 0;
             bool obstaculo = (fila % 2 == 1 || columna % 2 == 1) and !(fila <= 2 and columna <= 2);
-            bool resultado = (rand() % 100 < 30);*/
+            bool resultado = (rand() % 100 < 30);
 
-            if (contorno /*|| pilar*/)
+            if (contorno || pilar)
             {
                 mapa[fila][columna] = Celda(Tipo::pared);
             }
-            /*else if (obstaculo and resultado)
+            else if (obstaculo and resultado)
             {
                 mapa[fila][columna] = Celda(Tipo::caja);
-            }*/
 
+            }
+            if(mapa[fila][columna].obtenerTipo() == caja){
+                int num = rand() % 10 + 1;
+                switch(num){
+                case 1:
+                    mapa[fila][columna].asignarItem(TipoItem::Alcance);
+                    break;
+                case 2:
+                    mapa[fila][columna].asignarItem(TipoItem::masVida);
+                    break;
+                case 3:
+                    mapa[fila][columna].asignarItem(TipoItem::Velocidad);
+                    break;
+                case 4:
+                    mapa[fila][columna].asignarItem(TipoItem::BombaExtra);
+                    break;
+                case 5:
+                    mapa[fila][columna].asignarItem(TipoItem::cura);
+                    break;
+                default:
+                    mapa[fila][columna].asignarItem(TipoItem::Ninguno);
+                    break;
+
+                }
+
+            }
 
 
 
         }
     }
-
-    mapa[5][5]=Celda(Tipo::caja);
-    mapa[5][5].asignarItem(TipoItem::Alcance);
-
-    mapa[2][2]=Celda(Tipo::caja);
-    mapa[2][2].asignarItem(TipoItem::Velocidad);
-
-    mapa[3][3]=Celda(Tipo::caja);
-    mapa[3][3].asignarItem(TipoItem::BombaExtra);
-
-    mapa[4][4]=Celda(Tipo::caja);
-    mapa[4][4].asignarItem(TipoItem::Portal);
 }
 
 bool Mapa::esObstaculo(int fila, int columna) const
 {
     if (mapa == nullptr || fila < 0 || fila >= filas ||
-        columna < 0 || columna >= columnas)
-    {
+        columna < 0 || columna >= columnas){
         return true;
     }
 
@@ -113,6 +125,15 @@ int Mapa::obtenerTamanoCelda() const
     return tamanoCelda;
 }
 
+void Mapa::dibujar(QGraphicsScene* escena, int tamanoJugador)
+{
+    if (mapa == nullptr || escena == nullptr || tamanoCelda <= 0 || tamanoJugador <= 0) {
+        return;
+    }
 
-
-
+    for (int fila = 0; fila < filas; ++fila) {
+        for (int columna = 0; columna < columnas; ++columna) {
+            mapa[fila][columna].dibujar(escena, columna * tamanoCelda,fila * tamanoCelda, tamanoCelda, tamanoJugador);
+        }
+    }
+}

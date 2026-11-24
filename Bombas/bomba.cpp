@@ -30,7 +30,7 @@ void Bomba::dibujar(QGraphicsScene* escena, int tamanoCelda){
     }
 
     forma = escena->addRect(0, 0,  40, 40 );
-
+    forma->setBrush(QBrush(Qt::black));
     forma->setPos(columna, fila);
 }
 
@@ -57,4 +57,13 @@ int Bomba::obtenerAlcance() const{
 void Bomba::cambiarAlcance( int i) {
 
     alcance=i;
+}
+
+bool Bomba::seSuperponeCon(qreal x,qreal y,qreal ancho,qreal alto, int anchoBomba, int altoBomba) const
+{
+
+
+
+
+    return x < columna + anchoBomba &&x + ancho > columna &&y < fila + altoBomba &&y + alto > fila;
 }
