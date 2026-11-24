@@ -1,4 +1,5 @@
 #include "jugador.h"
+#include "../Bombas/colabomba.h"
 
 Jugador::Jugador(Mapa* mapa)
 {
@@ -7,7 +8,7 @@ Jugador::Jugador(Mapa* mapa)
     personaje = new QGraphicsRectItem(
         0, 0, tamanoJugador, tamanoJugador
         );
-
+    personaje->setBrush(QBrush(Qt::blue));
     personaje->setPos(100, 100);
 }
 
@@ -75,7 +76,7 @@ void Jugador::soltarTecla(QKeyEvent* evento)
     evento->accept();
 }
 
-void Jugador::actualizarMovimiento()
+void Jugador::actualizarMovimiento(const ColaBomba* bombas)
 {
     if (personaje == nullptr || mapa == nullptr || movimiento <= 0) {
         return;
@@ -89,6 +90,9 @@ void Jugador::actualizarMovimiento()
         return;
     }
 
+    const int filaActual = (y + tamanoJugador / 2) / celda;
+    const int columnaActual = (x + tamanoJugador / 2) / celda;
+
     switch (direccion) {
 
     case Direccion::Arriba: {
@@ -97,8 +101,8 @@ void Jugador::actualizarMovimiento()
         int columnaIzquierda = x / celda;
         int columnaDerecha = (x + tamanoJugador - 1) / celda;
 
-        if (!mapa->esObstaculo(filaDestino, columnaIzquierda) &&
-            !mapa->esObstaculo(filaDestino, columnaDerecha)) {
+        if (casillaLibre(filaDestino, columnaIzquierda, bombas, filaActual, columnaActual) &&
+            casillaLibre(filaDestino, columnaDerecha, bombas, filaActual, columnaActual)) {
 
             personaje->moveBy(0, -movimiento);
         }
@@ -114,8 +118,8 @@ void Jugador::actualizarMovimiento()
         int columnaIzquierda = x / celda;
         int columnaDerecha = (x + tamanoJugador - 1) / celda;
 
-        if (!mapa->esObstaculo(filaDestino, columnaIzquierda) &&
-            !mapa->esObstaculo(filaDestino, columnaDerecha)) {
+        if (casillaLibre(filaDestino, columnaIzquierda, bombas, filaActual, columnaActual) &&
+            casillaLibre(filaDestino, columnaDerecha, bombas, filaActual, columnaActual)) {
 
             personaje->moveBy(0, movimiento);
         }
@@ -131,8 +135,8 @@ void Jugador::actualizarMovimiento()
         int filaSuperior = y / celda;
         int filaInferior = (y + tamanoJugador - 1) / celda;
 
-        if (!mapa->esObstaculo(filaSuperior, columnaDestino) &&
-            !mapa->esObstaculo(filaInferior, columnaDestino)) {
+        if (casillaLibre(filaSuperior, columnaDestino, bombas, filaActual, columnaActual) &&
+            casillaLibre(filaInferior, columnaDestino, bombas, filaActual, columnaActual)) {
 
             personaje->moveBy(movimiento, 0);
         }
@@ -147,8 +151,8 @@ void Jugador::actualizarMovimiento()
         int filaSuperior = y / celda;
         int filaInferior = (y + tamanoJugador - 1) / celda;
 
-        if (!mapa->esObstaculo(filaSuperior, columnaDestino) &&
-            !mapa->esObstaculo(filaInferior, columnaDestino)) {
+        if (casillaLibre(filaSuperior, columnaDestino, bombas, filaActual, columnaActual) &&
+            casillaLibre(filaInferior, columnaDestino, bombas, filaActual, columnaActual)) {
 
             personaje->moveBy(-movimiento, 0);
         }
@@ -160,6 +164,74 @@ void Jugador::actualizarMovimiento()
         break;
     }
 }
+
+bool Jugador::casillaLibre(int fila, int columna, const ColaBomba* bombas,
+                           int filaActual, int columnaActual) const
+{
+    if (mapa == nullptr || mapa->esObstaculo(fila, columna)) {
+        return false;
+    }
+
+    if (bombas == nullptr ||
+        !bombas->existeBombaEn(fila, columna, mapa->obtenerTamanoCelda(), tamanoJugador)) {
+        return true;
+    }
+
+    // Permite salir de la casilla donde el jugador colocó la bomba.
+    return fila == filaActual && columna == columnaActual;
+}
+
+void Jugador::actualizarTemporizadores(int milisegundos)
+{
+    if (cooldownDanioMs > 0) {
+        cooldownDanioMs -= milisegundos;
+        if (cooldownDanioMs < 0) {
+            cooldownDanioMs = 0;
+        }
+    }
+}
+
+void Jugador::recibirDanio(int cantidad)
+{
+    if (cantidad <= 0 || vida <= 0 || cooldownDanioMs > 0) {
+        return;
+    }
+
+    vida -= cantidad;
+    if (vida < 0) {
+        vida = 0;
+    }
+    cooldownDanioMs = 800;
+}
+
+int Jugador::obtenerVida() const
+{
+    return vida;
+}
+
+int Jugador::obtenerVidaMaxima() const
+{
+    return vidaMaxima;
+}
+
+int Jugador::obtenerFilaActual() const
+{
+    if (personaje == nullptr || mapa == nullptr || mapa->obtenerTamanoCelda() <= 0) {
+        return -1;
+    }
+    return (static_cast<int>(personaje->pos().y()) + tamanoJugador / 2) /
+           mapa->obtenerTamanoCelda();
+}
+
+int Jugador::obtenerColumnaActual() const
+{
+    if (personaje == nullptr || mapa == nullptr || mapa->obtenerTamanoCelda() <= 0) {
+        return -1;
+    }
+    return (static_cast<int>(personaje->pos().x()) + tamanoJugador / 2) /
+           mapa->obtenerTamanoCelda();
+}
+
 int Jugador::obtenerTamanio(){
     return tamanoJugador;
 }
