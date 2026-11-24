@@ -59,11 +59,8 @@ void Bomba::cambiarAlcance( int i) {
     alcance=i;
 }
 
-bool Bomba::seSuperponeCon(qreal x,qreal y,qreal ancho,qreal alto, int anchoBomba, int altoBomba) const
+bool Bomba::seSuperponeCon(double x,double y,double ancho,double alto, int anchoBomba, int altoBomba) const
 {
-
-
-
 
     return x < columna + anchoBomba &&x + ancho > columna &&y < fila + altoBomba &&y + alto > fila;
 }

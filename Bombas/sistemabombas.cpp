@@ -12,8 +12,7 @@ void SistemaBombas::configurar(Mapa* mapa, QGraphicsScene* escena,Jugador* jugad
     this->jugador = jugador;
     this->tamanoJugador = tamanoJugador;
     if (jugador != nullptr) {
-        sistemaExplosion.configurar(mapa, escena, &jugador->obtenerBombas(),
-                                    tamanoJugador, enemigos, jugador);
+        sistemaExplosion.configurar(mapa, escena, &jugador->obtenerBombas(), tamanoJugador, enemigos, jugador);
     }
 }
 

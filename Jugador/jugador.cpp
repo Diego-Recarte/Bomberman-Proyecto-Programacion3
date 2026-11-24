@@ -45,7 +45,7 @@ Direccion Jugador::obtenerDireccion() const{
 }
 
 
-void Jugador::actualizarMovimiento(Mapa* mapa, int tamanoCelda, const ColaBomba* bombasActivas){
+void Jugador::actualizarMovimiento(Mapa* mapa, int tamanoCelda){
     if (mapa == nullptr || figura == nullptr || tamanoCelda <= 0) {
         return;
     }
@@ -74,8 +74,7 @@ void Jugador::actualizarMovimiento(Mapa* mapa, int tamanoCelda, const ColaBomba*
     case Direccion::Null:
         return;
     }
-    if (bombasActivas != nullptr &&
-        bombasActivas->bloqueaMovimiento(figura->pos().x(),figura->pos().y(),tamanioJugador,tamanioJugador,dx,dy,tamanioJugador)) {
+    if (bombas.obtenerCantidad() != 0 &&bombas.bloqueaMovimiento(figura->pos().x(),figura->pos().y(),tamanioJugador,tamanioJugador,dx,dy,tamanioJugador)) {
         return;
     }
 
@@ -209,7 +208,7 @@ int Jugador::obtenerFilaActual() const
     if (figura == nullptr || mapa == nullptr || mapa->obtenerTamanoCelda() <= 0) {
         return -1;
     }
-    return (static_cast<int>(figura->pos().y()) + tamanioJugador / 2) /mapa->obtenerTamanoCelda();
+    return (static_cast<int>(figura->pos().y()) + tamanioJugador / 4) /mapa->obtenerTamanoCelda();
 }
 
 int Jugador::obtenerColumnaActual() const
@@ -217,10 +216,10 @@ int Jugador::obtenerColumnaActual() const
     if (figura == nullptr || mapa == nullptr || mapa->obtenerTamanoCelda() <= 0) {
         return -1;
     }
-    return (static_cast<int>(figura->pos().x()) + tamanioJugador / 2) / mapa->obtenerTamanoCelda();
+    return (static_cast<int>(figura->pos().x()) + tamanioJugador / 4) / mapa->obtenerTamanoCelda();
 }
 void Jugador::aumentarVelocidad(){
-    velocidad = velocidad+ 3;
+    velocidad = velocidad+ 2;
 }
 
 PilaItem& Jugador::obtenerItems(){
