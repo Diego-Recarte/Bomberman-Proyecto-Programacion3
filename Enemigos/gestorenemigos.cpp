@@ -14,7 +14,7 @@ GestorEnemigos::~GestorEnemigos()
     delete[] enemigos;
 }
 
-void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJugador, int columnaJugador, int cantidad)
+void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJugador, int columnaJugador, int cantidad, int tamJugador)
 {
     if (mapa == nullptr || escena == nullptr || cantidad <= 0 || enemigos != nullptr) {
         return;
@@ -32,7 +32,7 @@ void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJu
                 continue;
             }
 
-            enemigos[cantidadEnemigos++] = new Enemigo(mapa, escena, fila, columna);
+            enemigos[cantidadEnemigos++] = new Enemigo(mapa, escena, fila, columna, tamJugador );
         }
     }
 }

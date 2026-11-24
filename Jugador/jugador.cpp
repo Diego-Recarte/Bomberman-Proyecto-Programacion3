@@ -9,7 +9,7 @@ Jugador::Jugador(int x, int y, int tamanio, int velocidadInicial, Mapa* mapa): m
     direccion = Direccion::Null;
     tamanioJugador = tamanio;
 
-    velocidad = velocidadInicial;
+    velocidad = velocidadInicial ;
      bombasMaximas=3;
      bombasActivas=0;
 

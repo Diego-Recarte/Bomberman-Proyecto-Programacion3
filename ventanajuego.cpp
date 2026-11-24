@@ -6,6 +6,11 @@
 #include <QPen>
 #include <QPixmap>
 
+#include "panelvida.h"
+
+
+#include <QGraphicsPixmapItem>
+#include <QDebug>
 
 VentanaJuego::VentanaJuego()
 {
@@ -26,6 +31,7 @@ VentanaJuego::VentanaJuego()
 
 
     controlador = new ControladorJuego(escena);
+
     crearInterfaz();
 
     temporizadorMovimiento = new QTimer(this);
@@ -44,6 +50,9 @@ VentanaJuego::~VentanaJuego()
     }
     delete controlador;
     controlador = nullptr;
+
+    delete panelVida;
+    panelVida = nullptr;
 }
 
 void VentanaJuego::keyPressEvent(QKeyEvent* evento)
@@ -79,25 +88,21 @@ void VentanaJuego::crearInterfaz()
     if (escena == nullptr) {
         return;
     }
-    barraVidaFondo = escena->addRect(0, 0, 184, 24, QPen(Qt::black), QBrush(Qt::darkGray));
-    barraVida = escena->addRect(0, 0, 180, 20, QPen(Qt::NoPen), QBrush(Qt::red));
-    barraVidaFondo->setPos(18, 18);
-    barraVidaFondo->setZValue(100);
-    barraVida->setPos(20, 20);
-    barraVida->setZValue(101);
 
     textoVida = escena->addText("");
     textoVida->setDefaultTextColor(Qt::white);
     textoVida->setFont(QFont("Arial", 12, QFont::Bold));
     textoVida->setPos(20, 45);
     textoVida->setZValue(102);
-
     textoResultado = escena->addText("");
     textoResultado->setDefaultTextColor(Qt::white);
     textoResultado->setFont(QFont("Arial", 28, QFont::Bold));
     textoResultado->setPos(560, 340);
     textoResultado->setZValue(200);
     textoResultado->setVisible(false);
+
+    panelVida = new PanelVida(escena, 1000, 50);
+
     actualizarInterfazVida();
 }
 
@@ -117,18 +122,19 @@ void VentanaJuego::actualizarPartida()
     }
 }
 
-void VentanaJuego::actualizarInterfazVida()
-{
-    if (controlador == nullptr) {
+void VentanaJuego::actualizarInterfazVida(){
+    if (controlador == nullptr)
+    {
         return;
     }
+
     const int vida = controlador->obtenerVidaActual();
     const int vidaMaxima = controlador->obtenerVidaMaxima();
-    if (barraVida != nullptr && vidaMaxima > 0) {
-        barraVida->setRect(0, 0, 180.0 * vida / vidaMaxima, 20);
-    }
-    if (textoVida != nullptr) {
-        textoVida->setPlainText(QString("Vida: %1 / %2").arg(vida).arg(vidaMaxima));
+
+
+    if (panelVida != nullptr)
+    {
+        panelVida->actualizar(vida, vidaMaxima);
     }
 }
 

@@ -4,5 +4,11 @@
         <file alias="pared.png">Assets/Tiles/pared.png</file>
         <file alias="piso.png">Assets/Tiles/piso.png</file>
         <file alias="ladrillosfondo.jpg">Assets/Backgrounds/ladrillos.jpg</file>
+        <file alias="corazon">Assets/Vidas/corazon.png</file>
+        <file alias="corazonRoto">Assets/Vidas/corazonRoto.png</file>
+        <file alias="cura">Assets/Items/cura.png</file>
+        <file alias="masbombas">Assets/Items/masbombas.png</file>
+        <file alias="mascorazones">Assets/Items/mascorazones.png</file>
+        <file alias="velocidades">Assets/Items/velocidad.png</file>
     </qresource>
 </RCC>

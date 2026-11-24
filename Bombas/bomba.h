@@ -8,7 +8,7 @@
 class Bomba{
 public:
     Bomba(int filaInicial, int columnaInicial, int duracionInicialMs, int alcanceInicial);
-    void dibujar(QGraphicsScene* escena, int tamanoCelda);
+    void dibujar(QGraphicsScene* escena, int tamanoCelda, int tamanioJugador);
     ~Bomba();
 
     int obtenerX() const;

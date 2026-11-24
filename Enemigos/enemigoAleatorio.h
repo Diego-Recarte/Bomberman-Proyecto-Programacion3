@@ -11,7 +11,7 @@ class QGraphicsScene;
 class Enemigo
 {
 public:
-    Enemigo(Mapa* mapa, QGraphicsScene* escena, int fila, int columna);
+    Enemigo(Mapa* mapa, QGraphicsScene* escena, int fila, int columna,  int tamJugador);
     ~Enemigo();
     int obtenerTamanio();
     void actualizar(int milisegundos, Jugador* jugador, const ColaBomba* bombas);

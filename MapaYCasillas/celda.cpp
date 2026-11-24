@@ -97,7 +97,7 @@ void Celda::dibujar(QGraphicsScene* escena,int x,int y,int tamanoCelda,int taman
         if (imagenPared.isNull()){
             relleno = QBrush(Qt::darkGray);
         }else{
-            const QPixmap imagenAjustada = imagenPared.scaled(tamanoCelda,tamanoCelda,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+            const QPixmap imagenAjustada = imagenPared.scaled(tamanoCelda,tamanoCelda ,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
             relleno = QBrush(imagenAjustada);
         }
 
@@ -123,7 +123,7 @@ void Celda::dibujar(QGraphicsScene* escena,int x,int y,int tamanoCelda,int taman
             relleno = QBrush(Qt::gray);
         }
         else{
-            const QPixmap imagenAjustada = imagenCaja.scaled(tamanoCelda,tamanoCelda,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+            const QPixmap imagenAjustada = imagenCaja.scaled(tamanoCelda ,tamanoCelda ,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
 
             relleno = QBrush(imagenAjustada);
         }
@@ -149,15 +149,31 @@ void Celda::dibujar(QGraphicsScene* escena,int x,int y,int tamanoCelda,int taman
 
         switch (item){
         case TipoItem::Alcance:{
+
+
+
+
             item = TipoItem::Ninguno;
             break;
         }
         case TipoItem::BombaExtra:{
-            relleno = QBrush(Qt::blue);
+            static const QPixmap imagenPared(":/masbombas");
+            if (imagenPared.isNull()){
+                relleno = QBrush(Qt::darkGray);
+            }else{
+                const QPixmap imagenAjustada = imagenPared.scaled(tamanoJugador* 2,tamanoJugador* 2,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+                relleno = QBrush(imagenAjustada);
+            }
             break;
         }
         case TipoItem::Velocidad:{
-            relleno = QBrush(Qt::cyan);
+            static const QPixmap imagenPared(":/velocidad");
+            if (imagenPared.isNull()){
+                relleno = QBrush(Qt::darkGray);
+            }else{
+                const QPixmap imagenAjustada = imagenPared.scaled(tamanoJugador* 2,tamanoJugador* 2,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+                relleno = QBrush(imagenAjustada);
+            }
             break;
         }
         case TipoItem::Portal:{
@@ -165,11 +181,25 @@ void Celda::dibujar(QGraphicsScene* escena,int x,int y,int tamanoCelda,int taman
             break;
         }
         case TipoItem::cura:{
-            relleno = QBrush(Qt::green);
+
+            static const QPixmap imagenPared(":/cura");
+            if (imagenPared.isNull()){
+                relleno = QBrush(Qt::darkGray);
+            }else{
+                const QPixmap imagenAjustada = imagenPared.scaled(tamanoJugador* 2,tamanoJugador* 2,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+                relleno = QBrush(imagenAjustada);
+            }
+
             break;
         }
         case TipoItem::masVida:{
-            relleno = QBrush(Qt::red);
+            static const QPixmap imagenPared(":/mascorazones");
+            if (imagenPared.isNull()){
+                relleno = QBrush(Qt::darkGray);
+            }else{
+                const QPixmap imagenAjustada = imagenPared.scaled(tamanoJugador* 2,tamanoJugador* 2,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+                relleno = QBrush(imagenAjustada);
+            }
             break;
         }
         case TipoItem::Ninguno:{
@@ -183,12 +213,15 @@ void Celda::dibujar(QGraphicsScene* escena,int x,int y,int tamanoCelda,int taman
 
     }
 
-    if ((item != TipoItem::Ninguno && item!=TipoItem::Portal) && Tipo::vacio==tipo){
-        int desplazamiento = (tamanoCelda - tamanoJugador) / 2;
+    if (tipo == Tipo::vacio &&item != TipoItem::Ninguno &&item != TipoItem::Portal){
+        const int tamanoItem = tamanoJugador *2;
 
-        forma = escena->addRect(0, 0,tamanoJugador, tamanoJugador,borde, relleno);
+        const qreal desplazamiento =(tamanoCelda - tamanoItem) / 2.0;
 
-        forma->setPos( x + desplazamiento, y + desplazamiento );
+        forma = escena->addRect(0,0,tamanoItem,tamanoItem,QPen(Qt::NoPen),relleno);
+
+        forma->setPos(x + desplazamiento,y + desplazamiento);
+        forma->setZValue(-0.5);
     }
     else{
         forma = escena->addRect(0, 0,tamanoCelda, tamanoCelda,borde, relleno);

@@ -7,10 +7,9 @@
 #include <QtGlobal>
 #include <cstdlib>
 
-Enemigo::Enemigo(Mapa* mapa, QGraphicsScene* escena, int fila, int columna)
-    : mapa(mapa), filaActual(fila), columnaActual(columna),
-      filaDestino(fila), columnaDestino(columna)
+Enemigo::Enemigo(Mapa* mapa, QGraphicsScene* escena, int fila, int columna, int tamJugador) : mapa(mapa), filaActual(fila), columnaActual(columna), filaDestino(fila), columnaDestino(columna)
 {
+    tamanoEnemigo=tamJugador;
     if (mapa == nullptr || escena == nullptr) {
         return;
     }
@@ -19,11 +18,9 @@ Enemigo::Enemigo(Mapa* mapa, QGraphicsScene* escena, int fila, int columna)
         return;
     }
     const int desplazamiento = (tamanoCelda - tamanoEnemigo) / 2;
-    personaje = escena->addRect(0, 0, tamanoEnemigo, tamanoEnemigo,
-                                QPen(Qt::black), QBrush(Qt::darkRed));
+    personaje = escena->addRect(0, 0, tamanoEnemigo, tamanoEnemigo,  QPen(Qt::black), QBrush(Qt::darkRed));
     if (personaje != nullptr) {
-        personaje->setPos(columnaActual * tamanoCelda + desplazamiento,
-                          filaActual * tamanoCelda + desplazamiento);
+        personaje->setPos(columnaActual * tamanoCelda + desplazamiento, filaActual * tamanoCelda + desplazamiento);
     }
 }
 

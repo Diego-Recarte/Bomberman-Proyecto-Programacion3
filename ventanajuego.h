@@ -9,6 +9,9 @@
 
 class ControladorJuego;
 class QGraphicsTextItem;
+class QGraphicsPixmapItem;
+
+class PanelVida;
 
 class VentanaJuego : public QGraphicsView
 {
@@ -21,6 +24,10 @@ protected:
     void keyReleaseEvent(QKeyEvent* evento) override;
 
 private:
+
+    PanelVida* panelVida = nullptr;
+
+
     QGraphicsScene* escena = nullptr;
     ControladorJuego* controlador = nullptr;
     QTimer* temporizadorMovimiento = nullptr;
@@ -28,10 +35,10 @@ private:
     enum class EstadoPartida { EnCurso, Derrota, Victoria };
     EstadoPartida estadoPartida = EstadoPartida::EnCurso;
 
-    QGraphicsRectItem* barraVidaFondo = nullptr;
-    QGraphicsRectItem* barraVida = nullptr;
+
     QGraphicsTextItem* textoVida = nullptr;
     QGraphicsTextItem* textoResultado = nullptr;
+    QGraphicsPixmapItem* corazonPrueba = nullptr;
 
     void crearInterfaz();
     void actualizarPartida();
