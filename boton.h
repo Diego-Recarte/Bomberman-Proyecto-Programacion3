@@ -11,11 +11,7 @@ private:
     QPushButton *boton;
 
 public:
-    Boton(QWidget *ventana,
-          QString texto,
-          int ancho = 150,
-          int alto = 40,
-          QString color = "#3498db");
+    Boton(QWidget *ventana,QString texto, int ancho = 150,  int alto = 40, QString color = "#3498db");
 
     QPushButton* obtenerBoton();
 };
