@@ -249,9 +249,6 @@ void Jugador::curar(){
 
 void Jugador::recogerItem(TipoItem item){
 
-
-
-
     switch (item){
     case TipoItem::Alcance:{
 

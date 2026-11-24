@@ -1,5 +1,6 @@
 #include "celda.h"
 #include <iostream>
+#include <QPixmap>
 
 Celda::Celda()
 {
@@ -73,10 +74,12 @@ void Celda::recibirExplosion()
                 forma->scene()->removeItem(forma);
             }
 
+
+
             delete forma;
             forma = nullptr;
         }
-        if (item != TipoItem::Ninguno && escenaActual != nullptr && item!=TipoItem::Alcance)
+        if (escenaActual != nullptr )
         {
             dibujar(escenaActual,posicionX,posicionY,tamanoCeldaActual,tamanoJugadorActual);
         }
@@ -87,23 +90,62 @@ void Celda::dibujar(QGraphicsScene* escena,int x,int y,int tamanoCelda,int taman
         return;
     }
 
-    if (tipo == Tipo::vacio && item == TipoItem::Ninguno){
-        return;
-    }
-
     QPen borde(Qt::black);
     QBrush relleno;
+    if (tipo == Tipo::vacio && item == TipoItem::Ninguno){
+        static const QPixmap imagenPared(":/piso.png");
+        if (imagenPared.isNull()){
+            relleno = QBrush(Qt::darkGray);
+        }else{
+            const QPixmap imagenAjustada = imagenPared.scaled(tamanoCelda,tamanoCelda,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+            relleno = QBrush(imagenAjustada);
+        }
+
+
+
+    }
 
     if (tipo == Tipo::pared){
-        relleno = QBrush(Qt::darkGray);
+        static const QPixmap imagenPared(":/pared.png");
+        if (imagenPared.isNull()){
+            relleno = QBrush(Qt::darkGray);
+        }else{
+            const QPixmap imagenAjustada = imagenPared.scaled(tamanoCelda,tamanoCelda,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+            relleno = QBrush(imagenAjustada);
+        }
+
     }
     else if (tipo == Tipo::caja){
-        relleno = QBrush(Qt::gray);
+
+        static const QPixmap imagenCaja(":/caja.png");
+
+        if (imagenCaja.isNull()){
+            relleno = QBrush(Qt::gray);
+        }
+        else{
+            const QPixmap imagenAjustada = imagenCaja.scaled(tamanoCelda,tamanoCelda,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+
+            relleno = QBrush(imagenAjustada);
+        }
     }
     else if (tipo == Tipo::cajaFuerte){
         relleno = QBrush(Qt::darkRed);
     }
     else if (item != TipoItem::Ninguno){
+
+        static const QPixmap imagenPared(":/piso.png");
+        if (imagenPared.isNull()){
+            relleno = QBrush(Qt::darkGray);
+        }else{
+            const QPixmap imagenAjustada = imagenPared.scaled(tamanoCelda,tamanoCelda,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+            relleno = QBrush(imagenAjustada);
+        }
+
+
+        forma = escena->addRect(0, 0,tamanoCelda, tamanoCelda,borde, relleno);
+
+        forma->setPos(x, y);
+        forma->setZValue(-1);
 
         switch (item){
         case TipoItem::Alcance:{
@@ -152,6 +194,10 @@ void Celda::dibujar(QGraphicsScene* escena,int x,int y,int tamanoCelda,int taman
         forma = escena->addRect(0, 0,tamanoCelda, tamanoCelda,borde, relleno);
 
         forma->setPos(x, y);
+    }
+    if (tipo == Tipo::vacio && item == TipoItem::Ninguno)
+    {
+        forma->setZValue(-1);
     }
 
     escenaActual = escena;

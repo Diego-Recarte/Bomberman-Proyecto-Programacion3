@@ -5,6 +5,7 @@ project(Bomberman_22541083_22441370 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
@@ -36,6 +37,7 @@ add_executable(${PROJECT_NAME}
 
     Enemigos/enemigoAleatorio.h Enemigos/enemigoAleatorio.cpp
     Enemigos/gestorenemigos.h Enemigos/gestorenemigos.cpp
+    Recursos.qrc
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
