@@ -6,11 +6,14 @@
 #include "Bombas/colabomba.h"
 #include "Bombas/sistemaexplosion.h"
 #include "Jugador/jugador.h"
+#include "Enemigos/gestorenemigos.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QKeyEvent>
 #include <QTimer>
+
+class QGraphicsTextItem;
 
 class VentanaJuego : public QGraphicsView
 {
@@ -39,8 +42,26 @@ private:
     //bombas
 
     ColaBomba bombas;
+    GestorEnemigos enemigos;
     SistemaExplosion sistemaExplosion;
     void actualizarBombas();
+
+    enum class EstadoPartida {
+        EnCurso,
+        Derrota,
+        Victoria
+    };
+
+    EstadoPartida estadoPartida = EstadoPartida::EnCurso;
+    QGraphicsRectItem* barraVidaFondo = nullptr;
+    QGraphicsRectItem* barraVida = nullptr;
+    QGraphicsTextItem* textoVida = nullptr;
+    QGraphicsTextItem* textoResultado = nullptr;
+
+    void crearInterfaz();
+    void actualizarPartida();
+    void actualizarInterfazVida();
+    void finalizarPartida(bool victoria);
 
 };
 

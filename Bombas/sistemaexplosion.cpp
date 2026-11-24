@@ -1,5 +1,6 @@
 #include "sistemaexplosion.h"
 #include "colabomba.h"
+#include "../Enemigos/gestorenemigos.h"
 #include "../MapaYCasillas/mapa.h"
 #include "../MapaYCasillas/celda.h"
 #include <QGraphicsRectItem>
@@ -8,13 +9,14 @@
 #include <QPen>
 #include <QTimer>
 
-void SistemaExplosion::configurar(Mapa* mapa, QGraphicsScene* escena,
-                                  ColaBomba* bombas, int tamanoJugador)
+void SistemaExplosion::configurar(Mapa* mapa, QGraphicsScene* escena, ColaBomba* bombas, int tamanoJugador,
+                                  GestorEnemigos* enemigos)
 {
     this->mapa = mapa;
     this->escena = escena;
     this->bombas = bombas;
     this->tamanoJugador = tamanoJugador;
+    this->enemigos = enemigos;
 }
 void SistemaExplosion::crearExplosion(int x, int y,  int tamanoCelda, int alcance){
     if (mapa == nullptr || escena == nullptr || tamanoCelda <= 0 ||
@@ -37,6 +39,9 @@ void SistemaExplosion::crearExplosion(int x, int y,  int tamanoCelda, int alcanc
         return;
     }
     flamaCentral->setPos(x, y);
+    if (enemigos != nullptr) {
+        enemigos->recibirExplosionEnCasilla(filaBomba, columnaBomba);
+    }
     QTimer::singleShot(500, this, [flamaCentral]() {
         delete flamaCentral;
     });
@@ -65,16 +70,19 @@ void SistemaExplosion::crearExplosion(int x, int y,  int tamanoCelda, int alcanc
                 bomba->recibirExplosion();
                 direccionValida[0] = false;
             }
-            else if (reaccionEnCadena(filaFlama, columnaBomba, retrasoPorAnillo * distancia))
-            {
-                direccionValida[0] = false;
-            }
             else
             {
+                if (enemigos != nullptr) {
+                    enemigos->recibirExplosionEnCasilla(filaFlama, columnaBomba);
+                }
+                if (reaccionEnCadena(filaFlama, columnaBomba, retrasoPorAnillo * distancia)) {
+                    direccionValida[0] = false;
+                } else {
 
 
 
-                direccionAlcance[0]++;
+                    direccionAlcance[0]++;
+                }
             }
         }
         //SUR
@@ -90,14 +98,17 @@ void SistemaExplosion::crearExplosion(int x, int y,  int tamanoCelda, int alcanc
                 bomba->recibirExplosion();
                 direccionValida[1] = false;
             }
-            else if (reaccionEnCadena(filaFlama, columnaBomba, retrasoPorAnillo * distancia))
-            {
-                direccionValida[1] = false;
-            }
             else
             {
+                if (enemigos != nullptr) {
+                    enemigos->recibirExplosionEnCasilla(filaFlama, columnaBomba);
+                }
+                if (reaccionEnCadena(filaFlama, columnaBomba, retrasoPorAnillo * distancia)) {
+                    direccionValida[1] = false;
+                } else {
 
-                direccionAlcance[1]++;
+                    direccionAlcance[1]++;
+                }
             }
         }
         //OESTE
@@ -113,14 +124,18 @@ void SistemaExplosion::crearExplosion(int x, int y,  int tamanoCelda, int alcanc
                 bomba->recibirExplosion();
                 direccionValida[2] = false;
             }
-            else if (reaccionEnCadena(filaBomba,  columnaFlama, retrasoPorAnillo * distancia)) {
-                direccionValida[2] = false;
-            }
             else
             {
+                if (enemigos != nullptr) {
+                    enemigos->recibirExplosionEnCasilla(filaBomba, columnaFlama);
+                }
+                if (reaccionEnCadena(filaBomba, columnaFlama, retrasoPorAnillo * distancia)) {
+                    direccionValida[2] = false;
+                } else {
 
 
-                direccionAlcance[2]++;
+                    direccionAlcance[2]++;
+                }
             }
         }
         //ESTE
@@ -135,14 +150,17 @@ void SistemaExplosion::crearExplosion(int x, int y,  int tamanoCelda, int alcanc
                 bomba->recibirExplosion();
                 direccionValida[3] = false;
             }
-            else if (reaccionEnCadena(filaBomba,  columnaFlama,retrasoPorAnillo * distancia)) {
-                direccionValida[3] = false;
-            }
-
             else
             {
+                if (enemigos != nullptr) {
+                    enemigos->recibirExplosionEnCasilla(filaBomba, columnaFlama);
+                }
+                if (reaccionEnCadena(filaBomba, columnaFlama, retrasoPorAnillo * distancia)) {
+                    direccionValida[3] = false;
+                } else {
 
-                direccionAlcance[3]++;
+                    direccionAlcance[3]++;
+                }
             }
         }
 
