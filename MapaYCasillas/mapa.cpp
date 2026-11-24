@@ -8,7 +8,7 @@ Mapa::Mapa(int filas, int columnas, int tamanoCelda)
     this->tamanoCelda = tamanoCelda;
 }
 
-Mapa::~Mapa()//destructor
+Mapa::~Mapa()
 {
     if (mapa != nullptr)
     {
@@ -23,35 +23,60 @@ Mapa::~Mapa()//destructor
 
 void Mapa::crearMapa()
 {
-
     if (mapa != nullptr || filas <= 0 || columnas <= 0)
     {
         return;
     }
+
     srand(time(NULL));
-
-
 
     mapa = new Celda*[filas]{};
 
-    for (int fila = 0; fila < filas; fila++)
-    {
+    for (int fila = 0; fila < filas; fila++){
         mapa[fila] = new Celda[columnas]{};
 
-        for (int columna = 0; columna < columnas; columna++)
-        {
+        for (int columna = 0; columna < columnas; columna++){
             bool contorno = fila == 0 || fila == filas - 1 || columna == 0 || columna == columnas - 1;
-            //Se dibujan las casillas indestructibles que no son parte del contorno del mapa
             bool pilar = fila % 2 == 0 and columna % 2 == 0;
-            //Se posicionan las cajas en puntos en los que no interfieran con otras casillas o el spawn del jugador
-            bool obstaculo = (fila % 2 == 1 || columna % 2 == 1) and !(fila <= 2 and columna <= 2) ;
-            bool resultado = (rand() % 100 < 30);//Un 30% de proabilidad de generar el obstaculo
+            bool obstaculo = (fila % 2 == 1 || columna % 2 == 1) and !(fila <= 2 and columna <= 2);
+            bool resultado = (rand() % 100 < 30);
+
             if (contorno || pilar)
             {
-                mapa[fila][columna] =  Celda(Tipo::pared);
-            }else if(obstaculo and resultado){
-                mapa[fila][columna] =  Celda(Tipo::caja);
+                mapa[fila][columna] = Celda(Tipo::pared);
             }
+            else if (obstaculo and resultado)
+            {
+                mapa[fila][columna] = Celda(Tipo::caja);
+
+            }
+            if(mapa[fila][columna].obtenerTipo() == caja){
+                int num = rand() % 10 + 1;
+                switch(num){
+                case 1:
+                    mapa[fila][columna].asignarItem(TipoItem::Alcance);
+                    break;
+                case 2:
+                    mapa[fila][columna].asignarItem(TipoItem::masVida);
+                    break;
+                case 3:
+                    mapa[fila][columna].asignarItem(TipoItem::Velocidad);
+                    break;
+                case 4:
+                    mapa[fila][columna].asignarItem(TipoItem::BombaExtra);
+                    break;
+                case 5:
+                    mapa[fila][columna].asignarItem(TipoItem::cura);
+                    break;
+                default:
+                    mapa[fila][columna].asignarItem(TipoItem::Ninguno);
+                    break;
+
+                }
+
+            }
+
+
 
         }
     }
@@ -59,7 +84,7 @@ void Mapa::crearMapa()
 
 bool Mapa::esObstaculo(int fila, int columna) const
 {
-    if (mapa == nullptr || fila < 0  || fila >= filas ||
+    if (mapa == nullptr || fila < 0 || fila >= filas ||
         columna < 0 || columna >= columnas)
     {
         return true;
@@ -72,7 +97,8 @@ bool Mapa::esObstaculo(int fila, int columna) const
     return mapa[fila][columna].esObstaculo();
 }
 
-Celda* Mapa::obtenerCelda(int fila, int columna){
+Celda* Mapa::obtenerCelda(int fila, int columna)
+{
     if (mapa == nullptr || fila < 0 || fila >= filas ||
         columna < 0 || columna >= columnas) {
         return nullptr;
@@ -100,8 +126,17 @@ int Mapa::obtenerTamanoCelda() const
     return tamanoCelda;
 }
 
+void Mapa::dibujar(QGraphicsScene* escena, int tamanoJugador)
+{
+    if (mapa == nullptr || escena == nullptr || tamanoCelda <= 0 || tamanoJugador <= 0) {
+        return;
+    }
 
-
-
-
-
+    for (int fila = 0; fila < filas; ++fila) {
+        for (int columna = 0; columna < columnas; ++columna) {
+            mapa[fila][columna].dibujar(escena, columna * tamanoCelda,
+                                       fila * tamanoCelda, tamanoCelda,
+                                       tamanoJugador);
+        }
+    }
+}
