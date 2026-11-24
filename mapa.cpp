@@ -30,7 +30,6 @@ void Mapa::crearMapa()
     }
 
     mapa = new Celda*[filas];
-    mapa = new Celda*[filas];
 
     for (int fila = 0; fila < filas; fila++)
     {
@@ -46,8 +45,9 @@ void Mapa::crearMapa()
         }
     }
 
-    mapa[5][5]= Celda(Tipo::vacio);
-    mapa[6][6]= Celda(Tipo::caja);
+
+    mapa[6][7]= Celda(Tipo::caja);
+    mapa[6][7].asignarItem(TipoItem::Portal);
     mapa[7][7]= Celda(Tipo::pared);
 
 
