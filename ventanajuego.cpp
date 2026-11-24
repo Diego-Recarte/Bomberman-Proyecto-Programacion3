@@ -4,6 +4,8 @@
 #include <QFont>
 #include <QGraphicsTextItem>
 #include <QPen>
+#include <QPixmap>
+
 
 VentanaJuego::VentanaJuego()
 {
@@ -11,14 +13,23 @@ VentanaJuego::VentanaJuego()
     escena = new QGraphicsScene(this);
     setScene(escena);
     escena->setSceneRect(0, 0, 1500, 770);
-    escena->setBackgroundBrush(QBrush(Qt::darkGreen));
+
+        const QPixmap fondo(":/ladrillosfondo.jpg");
+    if (!fondo.isNull()){
+        const QPixmap imagenAjustada = fondo.scaled(1500,770,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+
+        escena->setBackgroundBrush(QBrush(imagenAjustada));
+    }else{
+        escena->setBackgroundBrush(QBrush(Qt::yellow));
+    }
+
+
 
     controlador = new ControladorJuego(escena);
     crearInterfaz();
 
     temporizadorMovimiento = new QTimer(this);
-    connect(temporizadorMovimiento, &QTimer::timeout,
-            this, &VentanaJuego::actualizarPartida);
+    connect(temporizadorMovimiento, &QTimer::timeout,this, &VentanaJuego::actualizarPartida);
     temporizadorMovimiento->start(16);
 
     setFocusPolicy(Qt::StrongFocus);
