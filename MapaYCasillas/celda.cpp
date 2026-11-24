@@ -216,7 +216,7 @@ void Celda::dibujar(QGraphicsScene* escena,int x,int y,int tamanoCelda,int taman
     if (tipo == Tipo::vacio &&item != TipoItem::Ninguno &&item != TipoItem::Portal){
         const int tamanoItem = tamanoJugador *2;
 
-        const qreal desplazamiento =(tamanoCelda - tamanoItem) / 2.0;
+        const double desplazamiento =(tamanoCelda - tamanoItem) / 2.0;
 
         forma = escena->addRect(0,0,tamanoItem,tamanoItem,QPen(Qt::NoPen),relleno);
 
