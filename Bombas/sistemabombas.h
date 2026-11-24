@@ -14,7 +14,7 @@ class SistemaBombas
 public:
     void configurar(Mapa* mapa, QGraphicsScene* escena, Jugador* jugador, GestorEnemigos* enemigos, int tamanoJugador);
     void colocarBomba();
-    void actualizar();
+    void actualizar(int milisegundos);
 
 private:
     Mapa* mapa = nullptr;

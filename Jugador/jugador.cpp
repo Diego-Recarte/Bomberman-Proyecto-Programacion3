@@ -193,6 +193,17 @@ void Jugador::recibirDanio(int cantidad)
     cooldownDanioMs = 800;
 }
 
+void Jugador::recibirDanioPorExplosion(int cantidad)
+{
+    if (cantidad <= 0 || vidaActual <= 0) {
+        return;
+    }
+    vidaActual -= cantidad;
+    if (vidaActual < 0) {
+        vidaActual = 0;
+    }
+}
+
 void Jugador::actualizarTemporizadores(int milisegundos)
 {
     if (cooldownDanioMs > 0) {

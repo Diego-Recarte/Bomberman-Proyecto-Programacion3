@@ -48,6 +48,7 @@ public:
     int obtenerVidaActual() const;
     int obtenerVida() const;
     void recibirDanio(int cantidad);
+    void recibirDanioPorExplosion(int cantidad);
     void actualizarTemporizadores(int milisegundos);
     int obtenerFilaActual() const;
     int obtenerColumnaActual() const;
