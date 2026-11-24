@@ -11,7 +11,7 @@ class GestorEnemigos {
 public:
     ~GestorEnemigos();
 
-    void crearEnemigos(Mapa* mapa, QGraphicsScene* escena, int filaJugador, int columnaJugador, int cantidad);
+    void crearEnemigos(Mapa* mapa, QGraphicsScene* escena, int filaJugador, int columnaJugador, int cantidad, int tamJugador);
     void actualizar(int milisegundos, Jugador* jugador, const ColaBomba* bombas);
     void recibirExplosionEnCasilla(int fila, int columna);
     int obtenerCantidad() const;

@@ -52,7 +52,7 @@ bool ColaBomba::agregar(int fila, int columna, int tiempo, int alcance, QGraphic
     }
 
     NodoBomba* nueva = new NodoBomba(fila, columna, tiempo, alcance);
-    nueva->bomba.dibujar(escena, tamanoCelda);
+    nueva->bomba.dibujar(escena, tamanoCelda, tamanoJugador);
     if (estaVacia()) {
         primero = nueva;
         ultimo = nueva;

@@ -32,7 +32,7 @@ private:
     ControladorJugador controladorJugador;
     SistemaItems sistemaItems;
     SistemaBombas sistemaBombas;
-    const int tamanoJugador = 40;
+    const int tamanoJugador = 30;
 };
 
 #endif // CONTROLADORJUEGO_H

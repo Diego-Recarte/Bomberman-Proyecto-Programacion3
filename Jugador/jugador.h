@@ -73,7 +73,7 @@ private:
     int vidaActual;
     int vidaMaxima;
     int cooldownDanioMs = 0;
-    int tamanioJugador=40;
+    int tamanioJugador=10;
     int alcance=3;
 
     PilaItem items;

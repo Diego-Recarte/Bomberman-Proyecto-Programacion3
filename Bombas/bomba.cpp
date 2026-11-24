@@ -24,12 +24,12 @@ Bomba::~Bomba()
         forma = nullptr;
     }
 }
-void Bomba::dibujar(QGraphicsScene* escena, int tamanoCelda){
+void Bomba::dibujar(QGraphicsScene* escena, int tamanoCelda, int tamanioJugador){
     if (forma != nullptr) {
         return;
     }
 
-    forma = escena->addRect(0, 0,  40, 40 );
+    forma = escena->addRect(0, 0,   tamanioJugador,  tamanioJugador);
     forma->setBrush(QBrush(Qt::black));
     forma->setPos(columna, fila);
 }
