@@ -34,7 +34,7 @@ void SistemaBombas::colocarBomba(){
     }
 }
 
-void SistemaBombas::actualizar(){
+void SistemaBombas::actualizar(int milisegundos){
     if (mapa == nullptr || jugador == nullptr) {
         return;
     }
@@ -50,4 +50,5 @@ void SistemaBombas::actualizar(){
         jugador->bombaExplotada();
         sistemaExplosion.crearExplosion(x, y, mapa->obtenerTamanoCelda(), alcance);
     }
+    sistemaExplosion.actualizar(milisegundos);
 }
