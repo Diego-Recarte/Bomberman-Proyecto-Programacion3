@@ -12,6 +12,12 @@ GestorEnemigos::~GestorEnemigos()
         delete enemigos[i];
     }
     delete[] enemigos;
+
+    while (primerosImpactos != nullptr) {
+        NodoImpactoExplosion* eliminado = primerosImpactos;
+        primerosImpactos = primerosImpactos->siguiente;
+        delete eliminado;
+    }
 }
 
 void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJugador, int columnaJugador, int cantidad)
@@ -50,17 +56,84 @@ void GestorEnemigos::actualizar(int milisegundos, Jugador* jugador,
     }
 }
 
-void GestorEnemigos::recibirExplosionEnCasilla(int fila, int columna)
+void GestorEnemigos::recibirExplosionEnCasilla(
+    int fila, int columna, int identificadorExplosion)
 {
     for (int i = 0; i < cantidadEnemigos;) {
-        if (enemigos[i]->estaEnCasilla(fila, columna)) {
-            enemigos[i]->recibirDanio(1);
+        Enemigo* enemigo = enemigos[i];
+        if (enemigo->estaEnCasilla(fila, columna) &&
+            !yaRecibioExplosion(enemigo, identificadorExplosion)) {
+            registrarImpacto(enemigo, identificadorExplosion);
+            enemigo->recibirDanio(1);
         }
 
-        if (!enemigos[i]->estaVivo()) {
+        if (!enemigo->estaVivo()) {
             eliminarEnemigo(i);
         } else {
             ++i;
+        }
+    }
+}
+
+void GestorEnemigos::finalizarExplosion(int identificadorExplosion)
+{
+    NodoImpactoExplosion* anterior = nullptr;
+    NodoImpactoExplosion* actual = primerosImpactos;
+    while (actual != nullptr) {
+        if (actual->identificadorExplosion == identificadorExplosion) {
+            NodoImpactoExplosion* eliminado = actual;
+            actual = actual->siguiente;
+            if (anterior == nullptr) {
+                primerosImpactos = actual;
+            } else {
+                anterior->siguiente = actual;
+            }
+            delete eliminado;
+        } else {
+            anterior = actual;
+            actual = actual->siguiente;
+        }
+    }
+}
+
+bool GestorEnemigos::yaRecibioExplosion(
+    const Enemigo* enemigo, int identificadorExplosion) const
+{
+    NodoImpactoExplosion* actual = primerosImpactos;
+    while (actual != nullptr) {
+        if (actual->enemigo == enemigo &&
+            actual->identificadorExplosion == identificadorExplosion) {
+            return true;
+        }
+        actual = actual->siguiente;
+    }
+    return false;
+}
+
+void GestorEnemigos::registrarImpacto(
+    const Enemigo* enemigo, int identificadorExplosion)
+{
+    primerosImpactos = new NodoImpactoExplosion{
+        enemigo, identificadorExplosion, primerosImpactos};
+}
+
+void GestorEnemigos::eliminarImpactosDelEnemigo(const Enemigo* enemigo)
+{
+    NodoImpactoExplosion* anterior = nullptr;
+    NodoImpactoExplosion* actual = primerosImpactos;
+    while (actual != nullptr) {
+        if (actual->enemigo == enemigo) {
+            NodoImpactoExplosion* eliminado = actual;
+            actual = actual->siguiente;
+            if (anterior == nullptr) {
+                primerosImpactos = actual;
+            } else {
+                anterior->siguiente = actual;
+            }
+            delete eliminado;
+        } else {
+            anterior = actual;
+            actual = actual->siguiente;
         }
     }
 }
@@ -76,6 +149,7 @@ void GestorEnemigos::eliminarEnemigo(int indice)
         return;
     }
 
+    eliminarImpactosDelEnemigo(enemigos[indice]);
     delete enemigos[indice];
     for (int i = indice; i + 1 < cantidadEnemigos; ++i) {
         enemigos[i] = enemigos[i + 1];

@@ -13,7 +13,8 @@ public:
 
     void crearEnemigos(Mapa* mapa, QGraphicsScene* escena, int filaJugador, int columnaJugador, int cantidad);
     void actualizar(int milisegundos, Jugador* jugador, const ColaBomba* bombas);
-    void recibirExplosionEnCasilla(int fila, int columna);
+    void recibirExplosionEnCasilla(int fila, int columna, int identificadorExplosion);
+    void finalizarExplosion(int identificadorExplosion);
     int obtenerCantidad() const;
 
 private:
@@ -21,7 +22,17 @@ private:
     int cantidadEnemigos = 0;
     int capacidad = 0;
 
+    struct NodoImpactoExplosion {
+        const Enemigo* enemigo;
+        int identificadorExplosion;
+        NodoImpactoExplosion* siguiente = nullptr;
+    };
+    NodoImpactoExplosion* primerosImpactos = nullptr;
+
     void eliminarEnemigo(int indice);
+    bool yaRecibioExplosion(const Enemigo* enemigo, int identificadorExplosion) const;
+    void registrarImpacto(const Enemigo* enemigo, int identificadorExplosion);
+    void eliminarImpactosDelEnemigo(const Enemigo* enemigo);
 };
 
 #endif // GESTORENEMIGOS_H

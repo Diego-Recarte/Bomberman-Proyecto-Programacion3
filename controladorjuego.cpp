@@ -37,7 +37,7 @@ void ControladorJuego::actualizar(int milisegundos)
     }
     controladorJugador.actualizarMovimiento();
     sistemaItems.actualizar();
-    sistemaBombas.actualizar();
+    sistemaBombas.actualizar(milisegundos);
     controladorJugador.actualizarTemporizadores(milisegundos);
     enemigos.actualizar(milisegundos, jugador, &jugador->obtenerBombas());
 }
