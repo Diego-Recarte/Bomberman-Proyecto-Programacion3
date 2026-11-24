@@ -1,11 +1,9 @@
 #ifndef VENTANAJUEGO_H
 #define VENTANAJUEGO_H
 
-
 #include "MapaYCasillas/mapa.h"
-#include "Bombas/colabomba.h"
-#include "Bombas/sistemaexplosion.h"
-#include "Jugador/jugador.h"
+#include "jugador.h"
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
@@ -16,32 +14,37 @@ class VentanaJuego : public QGraphicsView
 {
 public:
     VentanaJuego();
-     Mapa* mapa = nullptr;
+    ~VentanaJuego() override;
+
+    Mapa* mapa = nullptr;
 
 protected:
-    void keyPressEvent(QKeyEvent* evento) override; //KeyPress
-    void keyReleaseEvent(QKeyEvent* evento) override;//KeyRelseEvent
+    void keyPressEvent(QKeyEvent* evento) override;
+    void keyReleaseEvent(QKeyEvent* evento) override;
 
 private:
-
-    ~VentanaJuego();
-
     Jugador* jugador = nullptr;
     QGraphicsScene* escena = nullptr;
-
     QTimer* temporizadorMovimiento = nullptr;
 
-    void colocarBomba();
-
+    int tamanoJugador = 40;
+    int tamanoFlama = 20;
+    int tamanoItemAlcance = 2;
 
     void construirMapa();
+    void actualizarMovimiento();
+    void revisarItemsJugador();
 
-    //bombas
-
-    ColaBomba bombas;
-    SistemaExplosion sistemaExplosion;
+    void colocarBomba();
     void actualizarBombas();
 
+    void crearExplosion(int x, int y, int tamanoCelda, int alcance);
+
+    bool reaccionEnCadena(
+        int filaFlama,
+        int columnaFlama,
+        int retraso
+        );
 };
 
 #endif // VENTANAJUEGO_H
