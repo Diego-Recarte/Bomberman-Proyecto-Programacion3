@@ -99,8 +99,7 @@ bool ColaBomba::existeBombaEn(int fila, int columna, int tamanoCelda,int tamanoJ
     return false;
 }
 
-bool ColaBomba::localizarBomba(int fila, int columna, int& x, int& y,
-                               int& alcance, int tamanoCelda, int tamanoJugador)
+bool ColaBomba::localizarBomba(int fila, int columna, int& x, int& y, int& alcance, int tamanoCelda, int tamanoJugador)
 {
     if (tamanoCelda <= 0 || tamanoJugador <= 0) {
         return false;
@@ -151,7 +150,7 @@ bool ColaBomba::eliminarBombaEn(int fila, int columna, int tamanoCelda, int tama
     return false;
 }
 
-bool ColaBomba:: bloqueaMovimiento(qreal x,qreal y,qreal ancho,qreal alto,qreal dx,qreal dy, int tamanoJugador) const{
+bool ColaBomba:: bloqueaMovimiento(double x,double y,double ancho,double alto,double dx,double dy, int tamanoJugador) const{
     const qreal inicioX = dx < 0 ? x + dx : x;
     const qreal inicioY = dy < 0 ? y + dy : y;
 

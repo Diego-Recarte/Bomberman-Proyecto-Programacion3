@@ -254,8 +254,7 @@ bool Celda::isItemDisponible() const{
     return itemDisponible;
 }
 
-void Celda::consumirItem()
-{
+void Celda::consumirItem(){
     if (forma != nullptr)
     {
         if (forma->scene() != nullptr)

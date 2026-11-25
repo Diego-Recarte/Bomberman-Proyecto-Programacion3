@@ -20,7 +20,7 @@ public:
     bool existeBombaEn(int fila, int columna, int tamanoCelda, int tamanoJugador) const;
     bool localizarBomba(int fila, int columna, int& x, int& y, int& alcance, int tamanoCelda, int tamanoJugador);
     bool eliminarBombaEn(int fila, int columna, int tamanoCelda, int tamanoJugador);
-    bool bloqueaMovimiento(qreal x,qreal y,qreal ancho,qreal alto,qreal dx,qreal dy, int tamanoJugador) const;
+    bool bloqueaMovimiento(double x,double y,double ancho,double alto,double dx,double dy, int tamanoJugador) const;
 
 private:
     NodoBomba* primero = nullptr;
