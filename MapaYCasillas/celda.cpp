@@ -13,16 +13,13 @@ Celda::Celda(Tipo tipoInicial){
     tipo = tipoInicial;
     item = TipoItem::Ninguno;
 
-    if (tipo == Tipo::caja)
-    {
+    if (tipo == Tipo::caja){
         resistencia = 1;
     }
-    else if (tipo == Tipo::cajaFuerte)
-    {
+    else if (tipo == Tipo::cajaFuerte){
         resistencia = 2;
     }
-    else
-    {
+    else{
         resistencia = 0;
     }
 }

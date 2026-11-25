@@ -5,21 +5,17 @@
 #include <QGraphicsTextItem>
 #include <QPen>
 #include <QPixmap>
-
 #include "panelvida.h"
-
-
 #include <QGraphicsPixmapItem>
 #include <QDebug>
 
-VentanaJuego::VentanaJuego()
-{
+VentanaJuego::VentanaJuego(){
     setWindowTitle("Bomberman - Mi primera ventana");
     escena = new QGraphicsScene(this);
     setScene(escena);
     escena->setSceneRect(0, 0, 1500, 770);
 
-        const QPixmap fondo(":/ladrillosfondo.jpg");
+    const QPixmap fondo(":/ladrillosfondo.jpg");
     if (!fondo.isNull()){
         const QPixmap imagenAjustada = fondo.scaled(1500,770,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
 
@@ -60,7 +56,7 @@ void VentanaJuego::keyPressEvent(QKeyEvent* evento)
     if (evento == nullptr) {
         return;
     }
-    if (estadoPartida != EstadoPartida::EnCurso || controlador == nullptr) {
+    if (estadoPartida != EstadoPartida::EnCurso|| controlador == nullptr) {
         evento->accept();
         return;
     }
@@ -132,14 +128,12 @@ void VentanaJuego::actualizarInterfazVida(){
     const int vidaMaxima = controlador->obtenerVidaMaxima();
 
 
-    if (panelVida != nullptr)
-    {
+    if (panelVida != nullptr){
         panelVida->actualizar(vida, vidaMaxima);
     }
 }
 
-void VentanaJuego::finalizarPartida(bool victoria)
-{
+void VentanaJuego::finalizarPartida(bool victoria){
     if (estadoPartida != EstadoPartida::EnCurso) {
         return;
     }

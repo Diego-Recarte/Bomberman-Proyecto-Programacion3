@@ -11,12 +11,7 @@
 #include <QPen>
 #include <QTimer>
 
-SistemaExplosion::NodoCasillaEnLlamas::NodoCasillaEnLlamas(
-    int fila, int columna, int inicioMs, int finMs,
-    NodoCasillaEnLlamas* siguiente)
-    : fila(fila), columna(columna), inicioMs(inicioMs), finMs(finMs),
-      siguiente(siguiente)
-{
+SistemaExplosion::NodoCasillaEnLlamas::NodoCasillaEnLlamas( int fila, int columna, int inicioMs, int finMs,NodoCasillaEnLlamas* siguiente): fila(fila), columna(columna), inicioMs(inicioMs), finMs(finMs),siguiente(siguiente){
 }
 
 SistemaExplosion::~SistemaExplosion()
@@ -29,10 +24,7 @@ SistemaExplosion::~SistemaExplosion()
     ultimaExplosion = nullptr;
 }
 
-void SistemaExplosion::configurar(Mapa* mapa, QGraphicsScene* escena,
-                                  ColaBomba* bombas, int tamanoJugador,
-                                  GestorEnemigos* enemigos, Jugador* jugador)
-{
+void SistemaExplosion::configurar(Mapa* mapa, QGraphicsScene* escena,ColaBomba* bombas, int tamanoJugador,GestorEnemigos* enemigos, Jugador* jugador){
     this->mapa = mapa;
     this->escena = escena;
     this->bombas = bombas;
@@ -41,10 +33,8 @@ void SistemaExplosion::configurar(Mapa* mapa, QGraphicsScene* escena,
     this->jugador = jugador;
 }
 
-void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance)
-{
-    if (mapa == nullptr || escena == nullptr || tamanoCelda <= 0 ||
-        alcance <= 0 || tamanoJugador <= 0) {
+void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance){
+    if (mapa == nullptr || escena == nullptr || tamanoCelda <= 0 ||alcance <= 0 || tamanoJugador <= 0) {
         return;
     }
 
@@ -63,8 +53,7 @@ void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance
     agregarCasilla(explosion, filaBomba, columnaBomba, 0, 500);
     explosion->duracionMs = 500;
 
-    QGraphicsRectItem* centro = escena->addRect(
-        0, 0, tamanoFlama, tamanoFlama, QPen(Qt::red), QBrush(Qt::yellow));
+    QGraphicsRectItem* centro = escena->addRect(0, 0, tamanoFlama, tamanoFlama, QPen(Qt::red), QBrush(Qt::yellow));
     centro->setPos(x, y);
 
     QTimer::singleShot(500, this, [centro]() { delete centro; });
@@ -73,13 +62,13 @@ void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance
     const int cambioColumna[4] = {0, 0, -1, 1};
     const int retrasoPorAnillo = 100;
 
-    // Cada direccion conserva su propio alcance porque un item puede extenderlo.
     for (int direccion = 0; direccion < 4; ++direccion) {
         int alcanceDireccion = alcance;
         for (int distancia = 1; distancia <= alcanceDireccion; ++distancia) {
             const int filaFlama = filaBomba + cambioFila[direccion] * distancia;
             const int columnaFlama = columnaBomba + cambioColumna[direccion] * distancia;
             Celda* celda = mapa->obtenerCelda(filaFlama, columnaFlama);
+
             if (celda == nullptr) {
                 break;
             }
@@ -107,8 +96,7 @@ void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance
                     }
                 }
             } else {
-                if (reaccionEnCadena(filaFlama, columnaFlama,
-                                     retrasoPorAnillo * distancia)) {
+                if (reaccionEnCadena(filaFlama, columnaFlama, retrasoPorAnillo * distancia)) {
                     continuar = false;
                 }
             }
@@ -116,16 +104,12 @@ void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance
             if (mostrarFlama) {
                 const int inicioMs = retrasoPorAnillo * (distancia - 1);
                 const int finMs = inicioMs + 500;
-                agregarCasilla(explosion, filaFlama, columnaFlama,
-                               inicioMs, finMs);
+                agregarCasilla(explosion, filaFlama, columnaFlama,inicioMs, finMs);
                 if (finMs > explosion->duracionMs) {
                     explosion->duracionMs = finMs;
                 }
-                QTimer::singleShot(inicioMs, this,
-                                   [this, xFlama, yFlama]() {
-                    QGraphicsRectItem* flama = escena->addRect(
-                        0, 0, tamanoFlama, tamanoFlama,
-                        QPen(Qt::red), QBrush(Qt::yellow));
+                QTimer::singleShot(inicioMs, this, [this, xFlama, yFlama]() {
+                    QGraphicsRectItem* flama = escena->addRect(0, 0, tamanoFlama, tamanoFlama,QPen(Qt::red), QBrush(Qt::yellow));
                     flama->setPos(xFlama, yFlama);
                     QTimer::singleShot(500, this, [flama]() { delete flama; });
                 });
@@ -145,8 +129,7 @@ void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance
     ultimaExplosion = explosion;
 }
 
-void SistemaExplosion::actualizar(int milisegundos)
-{
+void SistemaExplosion::actualizar(int milisegundos){
     if (milisegundos <= 0) {
         return;
     }
@@ -158,22 +141,18 @@ void SistemaExplosion::actualizar(int milisegundos)
 
         NodoCasillaEnLlamas* casilla = explosion->primeraCasilla;
         while (casilla != nullptr) {
-            if (explosion->tiempoMs < casilla->inicioMs ||
-                explosion->tiempoMs >= casilla->finMs) {
+            if (explosion->tiempoMs < casilla->inicioMs ||explosion->tiempoMs >= casilla->finMs) {
                 casilla = casilla->siguiente;
                 continue;
             }
 
-            if (!explosion->jugadorDanado &&
-                jugadorEnCasilla(casilla->fila, casilla->columna)) {
+            if (!explosion->jugadorDanado &&jugadorEnCasilla(casilla->fila, casilla->columna)) {
                 jugador->recibirDanioPorExplosion(1);
                 explosion->jugadorDanado = true;
             }
 
             if (enemigos != nullptr) {
-                enemigos->recibirExplosionEnCasilla(
-                    casilla->fila, casilla->columna,
-                    explosion->identificador);
+                enemigos->recibirExplosionEnCasilla(casilla->fila, casilla->columna,explosion->identificador);
             }
             casilla = casilla->siguiente;
         }
@@ -200,14 +179,12 @@ void SistemaExplosion::actualizar(int milisegundos)
     }
 }
 
-void SistemaExplosion::agregarCasilla(ExplosionActiva* explosion, int fila,
-                                      int columna, int inicioMs, int finMs)
+void SistemaExplosion::agregarCasilla(ExplosionActiva* explosion, int fila, int columna, int inicioMs, int finMs)
 {
     if (explosion == nullptr) {
         return;
     }
-    NodoCasillaEnLlamas* nueva = new NodoCasillaEnLlamas(
-        fila, columna, inicioMs, finMs, explosion->primeraCasilla);
+    NodoCasillaEnLlamas* nueva = new NodoCasillaEnLlamas(fila, columna, inicioMs, finMs, explosion->primeraCasilla);
     explosion->primeraCasilla = nueva;
 }
 
@@ -242,28 +219,22 @@ bool SistemaExplosion::jugadorEnCasilla(int fila, int columna) const
     return centroY / tamanoCelda == fila && centroX / tamanoCelda == columna;
 }
 
-bool SistemaExplosion::reaccionEnCadena(int filaFlama, int columnaFlama, int retraso)
+bool SistemaExplosion::reaccionEnCadena(  int filaFlama, int columnaFlama, int retraso)
 {
-    if (mapa == nullptr || bombas == nullptr ||
-        mapa->obtenerCelda(filaFlama, columnaFlama) == nullptr) {
+    if (mapa == nullptr || bombas == nullptr ||mapa->obtenerCelda(filaFlama, columnaFlama) == nullptr) {
         return false;
     }
 
     int xBomba = 0;
     int yBomba = 0;
     int alcanceBomba = 0;
-    if (!bombas->localizarBomba(filaFlama, columnaFlama, xBomba, yBomba,
-                                alcanceBomba, mapa->obtenerTamanoCelda(),
-                                tamanoJugador)) {
+    if (!bombas->localizarBomba(filaFlama, columnaFlama, xBomba, yBomba,alcanceBomba, mapa->obtenerTamanoCelda(),tamanoJugador)) {
         return false;
     }
 
-    QTimer::singleShot(retraso, this,
-                       [this, xBomba, yBomba, alcanceBomba,
-                        filaFlama, columnaFlama]() {
+    QTimer::singleShot(retraso, this,[this, xBomba, yBomba, alcanceBomba,filaFlama, columnaFlama]() {
         const int tamanoCelda = mapa->obtenerTamanoCelda();
-        if (bombas->eliminarBombaEn(filaFlama, columnaFlama,
-                                    tamanoCelda, tamanoJugador)) {
+        if (bombas->eliminarBombaEn(filaFlama, columnaFlama, tamanoCelda, tamanoJugador)) {
             if (jugador != nullptr) {
                 jugador->bombaExplotada();
             }
