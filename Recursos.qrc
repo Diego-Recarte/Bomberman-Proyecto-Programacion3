@@ -10,5 +10,6 @@
         <file alias="masbombas">Assets/Items/masbombas.png</file>
         <file alias="mascorazones">Assets/Items/mascorazones.png</file>
         <file alias="velocidades">Assets/Items/velocidad.png</file>
+        <file alias="inicio">Assets/Backgrounds/inicio.jpg</file>
     </qresource>
 </RCC>

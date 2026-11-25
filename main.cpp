@@ -19,18 +19,21 @@ int main(int argc, char *argv[])
     ventana.showMaximized();
 
 
-    // Contenedor de pantallas
+
     QStackedWidget *pantallas = new QStackedWidget(&ventana);
 
 
-    // PANTALLA 1: MENU PRINCIPAL
 
 
     QWidget *menu = new QWidget();
 
+    menu->setObjectName("menuPrincipal");
+
+    menu->setStyleSheet( "QWidget#menuPrincipal {" "    border-image: url(:/inicio) 0 0 0 0 stretch stretch;" "}" );
+
     QVBoxLayout *principal = new QVBoxLayout(menu);
 
-    QLabel *placeholder = new QLabel("MENU PRINCIPAL");
+    QLabel *placeholder = new QLabel(" ");
 
 
     placeholder->setAlignment(Qt::AlignCenter);
@@ -53,39 +56,29 @@ int main(int argc, char *argv[])
     principal->addWidget(placeholder, 1);
     principal->addLayout(grid);
 
-    // PANTALLA 2: JUEGO
+
 
 
     VentanaJuego *juego = new VentanaJuego();
-    // AGREGAR PANTALLAS
+
 
 
     pantallas->addWidget(menu);
     pantallas->addWidget(juego);
 
-    // Layout de la ventana principal
     QVBoxLayout *layoutVentana = new QVBoxLayout(&ventana);
 
     layoutVentana->setContentsMargins(0, 0, 0, 0);
     layoutVentana->addWidget(pantallas);
 
 
-    // CAMBIO DE PANTALLA
 
-    QObject::connect(
-        btnJugar.obtenerBoton(),
-        &QPushButton::clicked,
-        [=]() {
-            pantallas->setCurrentWidget(juego);
-        }
-        );
 
-    QObject::connect(
-        btnSalir.obtenerBoton(),
-        &QPushButton::clicked,
-        &ventana,
-        &QWidget::close
-        );
+    QObject::connect(btnJugar.obtenerBoton(),&QPushButton::clicked,[=]() {
+        pantallas->setCurrentWidget(juego);
+    });
+
+    QObject::connect(btnSalir.obtenerBoton(),&QPushButton::clicked,&ventana,&QWidget::close);
 
 
 

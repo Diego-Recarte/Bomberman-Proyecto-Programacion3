@@ -13,8 +13,7 @@ PanelVida::PanelVida(QGraphicsScene* escena, int x, int y)
     imagenCorazon = QPixmap(":/corazon");
     imagenCorazonRoto = QPixmap(":/corazonRoto");
 
-    if (imagenCorazon.isNull() || imagenCorazonRoto.isNull())
-    {
+    if (imagenCorazon.isNull() || imagenCorazonRoto.isNull()){
 
         return;
     }
