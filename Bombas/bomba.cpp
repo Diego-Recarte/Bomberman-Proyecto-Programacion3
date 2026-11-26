@@ -2,7 +2,6 @@
 #include<iostream>
 Bomba:: Bomba(int filaInicial, int columnaInicial, int duracionInicialMs, int alcanceInicial){
 
-    std::cout<<"Bomba creada ya"<<std::endl;
     fila = filaInicial;
     columna = columnaInicial;
     tiempo = duracionInicialMs;

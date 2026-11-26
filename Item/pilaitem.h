@@ -14,8 +14,7 @@ struct NodoItem{
     }
 };
 
-class PilaItem
-{
+class PilaItem{
 private:
     NodoItem* cima;
     int cantidad;

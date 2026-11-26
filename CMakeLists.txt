@@ -39,7 +39,19 @@ add_executable(${PROJECT_NAME}
     Enemigos/gestorenemigos.h Enemigos/gestorenemigos.cpp
     Recursos.qrc
     panelvida.h panelvida.cpp
+
     Enemigos/enemigoautonomo.h Enemigos/enemigoautonomo.cpp
+
+    usuario.h usuario.cpp
+    listausuarios.h listausuarios.cpp
+    nodousuario.h nodousuario.cpp
+    ventanaprincipal.h ventanaprincipal.cpp
+    ventanamenu.h ventanamenu.cpp
+    ventanabienvenida.h ventanabienvenida.cpp
+    ventanainiciosesion.h ventanainiciosesion.cpp
+    ventanaregistro.h ventanaregistro.cpp
+    sistemausuarios.h sistemausuarios.cpp
+    ventanaranking.h ventanaranking.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
