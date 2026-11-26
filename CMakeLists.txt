@@ -39,6 +39,7 @@ add_executable(${PROJECT_NAME}
     Enemigos/gestorenemigos.h Enemigos/gestorenemigos.cpp
     Recursos.qrc
     panelvida.h panelvida.cpp
+    Enemigos/enemigoautonomo.h Enemigos/enemigoautonomo.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
