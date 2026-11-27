@@ -120,7 +120,7 @@ void Enemigo::avanzar(int milisegundos, const ColaBomba* bombas)
     }
 
     // Misma velocidad base que el jugador: 5 píxeles cada 16 ms.
-    qreal distanciaRestante = 5.0 * milisegundos / 16.0;
+    qreal distanciaRestante = 4.0 * milisegundos / 16.0;
     while (distanciaRestante > 0 && desplazandose) {
         const qreal xObjetivo = columnaDestino * tamanoCelda +
                                 (tamanoCelda - tamanoEnemigo) / 2.0;

@@ -16,7 +16,9 @@ ControladorJuego::ControladorJuego(QGraphicsScene* escena): escena(escena)
     jugador = new Jugador(100, 100, tamanoJugador, 5, mapa);
     escena->addItem(jugador->obtenerFigura());
 
-    enemigos.crearEnemigos(mapa, escena, jugador->obtenerFilaActual(),jugador->obtenerColumnaActual(), 3, tamanoJugador);
+    enemigos.crearEnemigos(mapa, escena, jugador->obtenerFilaActual(),
+                           jugador->obtenerColumnaActual(), 3, 1,
+                           tamanoJugador, jugador);
     controladorJugador.configurar(jugador, mapa);
     sistemaItems.configurar(mapa, jugador, tamanoJugador);
     sistemaBombas.configurar(mapa, escena, jugador, &enemigos, tamanoJugador);

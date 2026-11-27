@@ -37,7 +37,7 @@ add_executable(${PROJECT_NAME}
     Recursos.qrc
     panelvida.h panelvida.cpp
 
-    Enemigos/enemigoautonomo.h Enemigos/enemigoautonomo.cpp
+    Enemigos/enemigoPersecutor.h Enemigos/enemigoPersecutor.cpp
 
     Usuario/usuario.h Usuario/usuario.cpp
     Usuario/listausuarios.h Usuario/listausuarios.cpp

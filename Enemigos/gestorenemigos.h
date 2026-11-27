@@ -1,8 +1,10 @@
 #ifndef GESTORENEMIGOS_H
 #define GESTORENEMIGOS_H
 
+
 class ColaBomba;
 class Enemigo;
+class EnemigoPersecutor;
 class Jugador;
 class Mapa;
 class QGraphicsScene;
@@ -12,6 +14,7 @@ public:
     ~GestorEnemigos();
 
     void crearEnemigos(Mapa* mapa, QGraphicsScene* escena, int filaJugador, int columnaJugador, int cantidad, int tamJugador);
+    void crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJugador, int columnaJugador, int aleatorio,int inteligente, int tamJugador, Jugador* jugador);
     void actualizar(int milisegundos, Jugador* jugador, const ColaBomba* bombas);
     void recibirExplosionEnCasilla(int fila, int columna, int identificadorExplosion);
     void finalizarExplosion(int identificadorExplosion);
