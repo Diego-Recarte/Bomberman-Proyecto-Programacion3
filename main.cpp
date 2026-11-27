@@ -7,11 +7,11 @@
 #include <QPushButton>
 
 #include "Boton.h"
-#include "ventanajuego.h"
+#include "Ventanas/ventanajuego.h"
 #include <QApplication>
 
-#include "ventanaprincipal.h"
-#include "ventanaprincipal.h"
+#include "Ventanas/ventanaprincipal.h"
+#include "Ventanas/ventanaprincipal.h"
 #include "sistemausuarios.h"
 
 int main(int argc, char *argv[])

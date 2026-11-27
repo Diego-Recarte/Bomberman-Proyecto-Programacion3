@@ -12,7 +12,7 @@ class Enemigo
 {
 public:
     Enemigo(Mapa* mapa, QGraphicsScene* escena, int fila, int columna,  int tamJugador);
-    ~Enemigo();
+    virtual ~Enemigo();
     int obtenerTamanio();
     void actualizar(int milisegundos, Jugador* jugador, const ColaBomba* bombas);
     void recibirDanio(int cantidad);
