@@ -2,6 +2,7 @@
 
 #include "enemigoAleatorio.h"
 #include "../MapaYCasillas/mapa.h"
+#include "enemigoPersecutor.h"
 #include "jugador.h"
 #include "../Bombas/colabomba.h"
 #include <QGraphicsScene>
@@ -20,7 +21,8 @@ GestorEnemigos::~GestorEnemigos()
     }
 }
 
-void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJugador, int columnaJugador, int cantidad, int tamJugador)
+void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJugador, int columnaJugador,
+                                   int cantidad,  int tamJugador)
 {
     if (mapa == nullptr || escena == nullptr || cantidad <= 0 || enemigos != nullptr) {
         return;
@@ -41,6 +43,35 @@ void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJu
             enemigos[cantidadEnemigos++] = new Enemigo(mapa, escena, fila, columna, tamJugador );
         }
     }
+}
+void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJugador, int columnaJugador,
+                                   int aleatorio,int inteligente, int tamJugador, Jugador* jugador)
+{
+    if (mapa == nullptr || escena == nullptr || jugador == nullptr ||
+        aleatorio + inteligente <= 0 || enemigos != nullptr) {
+        return;
+    }
+
+    capacidad = aleatorio + inteligente;
+    enemigos = new Enemigo*[capacidad]{};
+    for (int fila = mapa->obtenerFilas() - 2;
+         fila >= 1 && cantidadEnemigos < capacidad; --fila) {
+        for (int columna = mapa->obtenerColumnas() - 2;
+             columna >= 1 && cantidadEnemigos < capacidad; --columna) {
+            if ((fila == filaJugador && columna == columnaJugador) ||
+                mapa->esObstaculo(fila, columna)) {
+                continue;
+            }
+            if(cantidadEnemigos < aleatorio){
+                enemigos[cantidadEnemigos++] = new Enemigo(mapa, escena, fila, columna, tamJugador );
+            }
+            else{
+                enemigos[cantidadEnemigos++] = new EnemigoPersecutor(
+                    mapa, escena, fila, columna, tamJugador, jugador);
+            }
+        }
+    }
+
 }
 
 void GestorEnemigos::actualizar(int milisegundos, Jugador* jugador,
