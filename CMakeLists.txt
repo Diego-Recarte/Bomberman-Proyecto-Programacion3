@@ -52,6 +52,7 @@ add_executable(${PROJECT_NAME}
     Ventanas/ventanaregistro.h Ventanas/ventanaregistro.cpp
 
     Ventanas/ventanaranking.h Ventanas/ventanaranking.cpp
+    Enemigos/fantasma.h Enemigos/fantasma.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
