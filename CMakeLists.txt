@@ -12,10 +12,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 add_executable(${PROJECT_NAME}
     controladorjuego.h controladorjuego.cpp
 
-
-
     main.cpp
-    ventanajuego.h ventanajuego.cpp
 
     boton.h boton.cpp
 
@@ -39,16 +36,23 @@ add_executable(${PROJECT_NAME}
     Enemigos/gestorenemigos.h Enemigos/gestorenemigos.cpp
     Recursos.qrc
     panelvida.h panelvida.cpp
-    usuario.h usuario.cpp
-    listausuarios.h listausuarios.cpp
-    nodousuario.h nodousuario.cpp
-    ventanaprincipal.h ventanaprincipal.cpp
-    ventanamenu.h ventanamenu.cpp
-    ventanabienvenida.h ventanabienvenida.cpp
-    ventanainiciosesion.h ventanainiciosesion.cpp
-    ventanaregistro.h ventanaregistro.cpp
-    sistemausuarios.h sistemausuarios.cpp
-    ventanaranking.h ventanaranking.cpp
+
+    Enemigos/enemigoPersecutor.h Enemigos/enemigoPersecutor.cpp
+
+    Usuario/usuario.h Usuario/usuario.cpp
+    Usuario/listausuarios.h Usuario/listausuarios.cpp
+    Usuario/nodousuario.h Usuario/nodousuario.cpp
+    Usuario/sistemausuarios.h Usuario/sistemausuarios.cpp
+
+    Ventanas/ventanajuego.h Ventanas/ventanajuego.cpp
+    Ventanas/ventanaprincipal.h Ventanas/ventanaprincipal.cpp
+    Ventanas/ventanamenu.h Ventanas/ventanamenu.cpp
+    Ventanas/ventanabienvenida.h Ventanas/ventanabienvenida.cpp
+    Ventanas/ventanainiciosesion.h Ventanas/ventanainiciosesion.cpp
+    Ventanas/ventanaregistro.h Ventanas/ventanaregistro.cpp
+
+    Ventanas/ventanaranking.h Ventanas/ventanaranking.cpp
+    Enemigos/fantasma.h Enemigos/fantasma.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -58,6 +62,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/Jugador"
     "${CMAKE_CURRENT_SOURCE_DIR}/Item"
     "${CMAKE_CURRENT_SOURCE_DIR}/MapaYCasillas"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Ventanas"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Usuario"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)

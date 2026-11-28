@@ -12,6 +12,7 @@ Mapa(int filas, int columnas, int tamanoCelda);
 void crearMapa();
 void dibujar(QGraphicsScene* escena, int tamanoJugador);
 bool esObstaculo(int fila, int columna) const;
+bool esPared(int fila, int columna) const;
 Celda* obtenerCelda(int fila, int columna);
 
 int obtenerFilas() const;

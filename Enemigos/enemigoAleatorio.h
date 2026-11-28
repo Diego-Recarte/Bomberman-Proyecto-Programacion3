@@ -12,17 +12,22 @@ class Enemigo
 {
 public:
     Enemigo(Mapa* mapa, QGraphicsScene* escena, int fila, int columna,  int tamJugador);
-    ~Enemigo();
+    virtual ~Enemigo();
     int obtenerTamanio();
     void actualizar(int milisegundos, Jugador* jugador, const ColaBomba* bombas);
     void recibirDanio(int cantidad);
     bool estaVivo() const;
     bool estaEnCasilla(int fila, int columna) const;
+    virtual bool elegirSiguienteCasilla(const ColaBomba* bombas);
+
+
+
     QGraphicsRectItem* obtenerPersonaje();
 
-private:
-    QGraphicsRectItem* personaje = nullptr;
     Mapa* mapa = nullptr;
+protected:
+    QGraphicsRectItem* personaje = nullptr;
+
     int vida = 1;
     int tamanoEnemigo = 40;
     int filaActual = 0;
@@ -34,7 +39,6 @@ private:
     int cooldownAtaqueMs = 0;
     bool desplazandose = false;
 
-    bool elegirSiguienteCasilla(const ColaBomba* bombas);
     void avanzar(int milisegundos, const ColaBomba* bombas);
 };
 
