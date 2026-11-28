@@ -13,8 +13,7 @@
 
 #include <iostream>
 
-VentanaPrincipal::VentanaPrincipal( SistemaUsuarios& sistema, QWidget* padre): QWidget(padre), sistema(sistema)
-{
+VentanaPrincipal::VentanaPrincipal( SistemaUsuarios& sistema, QWidget* padre): QWidget(padre), sistema(sistema){
     setWindowTitle("Bomberman");
 
     pantallas = new QStackedWidget(this);
