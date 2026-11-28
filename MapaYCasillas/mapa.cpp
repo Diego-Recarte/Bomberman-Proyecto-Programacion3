@@ -95,6 +95,17 @@ bool Mapa::esObstaculo(int fila, int columna) const
 
     return mapa[fila][columna].esObstaculo();
 }
+bool Mapa::esPared(int fila, int columna) const{
+    if (mapa == nullptr || fila < 0 || fila >= filas ||
+        columna < 0 || columna >= columnas){
+        return true;
+    }
+
+    if (mapa[fila] == nullptr) {
+        return true;
+    }
+    return mapa[fila][columna].obtenerTipo() == Tipo::pared;
+}
 
 Celda* Mapa::obtenerCelda(int fila, int columna)
 {

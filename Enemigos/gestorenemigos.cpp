@@ -3,6 +3,7 @@
 #include "enemigoAleatorio.h"
 #include "../MapaYCasillas/mapa.h"
 #include "enemigoPersecutor.h"
+#include "fantasma.h"
 #include "jugador.h"
 #include "../Bombas/colabomba.h"
 #include <QGraphicsScene>
@@ -73,7 +74,39 @@ void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJu
     }
 
 }
+void GestorEnemigos::crearEnemigos(Mapa* mapa, QGraphicsScene* escena,int filaJugador, int columnaJugador,
+                                   int aleatorio,int inteligente,int fantasma, int tamJugador, Jugador* jugador)
+{
+    if (mapa == nullptr || escena == nullptr || jugador == nullptr ||
+        aleatorio + inteligente + fantasma<= 0 || enemigos != nullptr) {
+        return;
+    }
 
+    capacidad = aleatorio + inteligente + fantasma;
+    enemigos = new Enemigo*[capacidad]{};
+    for (int fila = mapa->obtenerFilas() - 2;
+         fila >= 1 && cantidadEnemigos < capacidad; --fila) {
+        for (int columna = mapa->obtenerColumnas() - 2;
+             columna >= 1 && cantidadEnemigos < capacidad; --columna) {
+            if ((fila == filaJugador && columna == columnaJugador) ||
+                mapa->esObstaculo(fila, columna)) {
+                continue;
+            }
+            if (0<aleatorio){
+                enemigos[cantidadEnemigos++] = new Enemigo(mapa, escena, fila, columna, tamJugador );
+                aleatorio--;
+            }else if(0 < fantasma){
+                enemigos[cantidadEnemigos++] = new class fantasma(mapa, escena, fila, columna, tamJugador );
+                fantasma--;
+            }
+            else{
+                enemigos[cantidadEnemigos++] = new EnemigoPersecutor(
+                    mapa, escena, fila, columna, tamJugador, jugador);
+            }
+        }
+    }
+
+}
 void GestorEnemigos::actualizar(int milisegundos, Jugador* jugador,
                                 const ColaBomba* bombas)
 {

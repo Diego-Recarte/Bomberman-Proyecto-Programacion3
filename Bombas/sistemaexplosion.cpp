@@ -40,6 +40,7 @@ void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance
 
     x += tamanoJugador / 4;
     y += tamanoJugador / 4;
+    int duracion = 350;
     const int centroX = x + tamanoJugador / 4;
     const int centroY = y + tamanoJugador / 4;
     const int filaBomba = centroY / tamanoCelda;
@@ -50,13 +51,13 @@ void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance
 
     ExplosionActiva* explosion = new ExplosionActiva;
     explosion->identificador = siguienteIdentificadorExplosion++;
-    agregarCasilla(explosion, filaBomba, columnaBomba, 0, 500);
-    explosion->duracionMs = 500;
+    agregarCasilla(explosion, filaBomba, columnaBomba, 0, duracion);
+    explosion->duracionMs = duracion;
 
     QGraphicsRectItem* centro = escena->addRect(0, 0, tamanoFlama, tamanoFlama, QPen(Qt::red), QBrush(Qt::yellow));
     centro->setPos(x, y);
 
-    QTimer::singleShot(500, this, [centro]() { delete centro; });
+    QTimer::singleShot(duracion, this, [centro]() { delete centro; });
 
     const int cambioFila[4] = {-1, 1, 0, 0};
     const int cambioColumna[4] = {0, 0, -1, 1};
@@ -103,15 +104,15 @@ void SistemaExplosion::crearExplosion(int x, int y, int tamanoCelda, int alcance
 
             if (mostrarFlama) {
                 const int inicioMs = retrasoPorAnillo * (distancia - 1);
-                const int finMs = inicioMs + 500;
+                const int finMs = inicioMs + duracion;
                 agregarCasilla(explosion, filaFlama, columnaFlama,inicioMs, finMs);
                 if (finMs > explosion->duracionMs) {
                     explosion->duracionMs = finMs;
                 }
-                QTimer::singleShot(inicioMs, this, [this, xFlama, yFlama]() {
+                QTimer::singleShot(inicioMs, this, [this, xFlama, yFlama, duracion]() {
                     QGraphicsRectItem* flama = escena->addRect(0, 0, tamanoFlama, tamanoFlama,QPen(Qt::red), QBrush(Qt::yellow));
                     flama->setPos(xFlama, yFlama);
-                    QTimer::singleShot(500, this, [flama]() { delete flama; });
+                    QTimer::singleShot(duracion, this, [flama]() { delete flama; });
                 });
             }
 
