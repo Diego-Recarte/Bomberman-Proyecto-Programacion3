@@ -7,7 +7,7 @@
 #include <QPixmap>
 #include "panelvida.h"
 #include <QGraphicsPixmapItem>
-#include <QDebug>
+
 
 VentanaJuego::VentanaJuego(){
     setWindowTitle("Bomberman - Mi primera ventana");
@@ -26,9 +26,19 @@ VentanaJuego::VentanaJuego(){
 
 
 
+
     controlador = new ControladorJuego(escena);
 
     crearInterfaz();
+
+
+
+    temporizadorNivel = new QTimer(this);
+    iniciarCronometro(tiempoInicial);
+
+    connect(temporizadorNivel,&QTimer::timeout,this,&VentanaJuego::actualizarTiempo);
+
+
 
     temporizadorMovimiento = new QTimer(this);
     connect(temporizadorMovimiento, &QTimer::timeout,this, &VentanaJuego::actualizarPartida);
@@ -49,6 +59,9 @@ VentanaJuego::~VentanaJuego()
 
     delete panelVida;
     panelVida = nullptr;
+    if (temporizadorNivel != nullptr) {
+        temporizadorNivel->stop();
+    }
 }
 
 void VentanaJuego::keyPressEvent(QKeyEvent* evento)
@@ -84,6 +97,28 @@ void VentanaJuego::crearInterfaz()
     if (escena == nullptr) {
         return;
     }
+
+
+    QPixmap imagenReloj(":/reloj");
+
+    itemReloj = new QGraphicsPixmapItem(imagenReloj);
+
+    if (!imagenReloj.isNull()) {
+        itemReloj->setPixmap(imagenReloj.scaled( 200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+    }
+
+    itemReloj->setPos(960, 320);
+    itemReloj->setZValue(102);
+    escena->addItem(itemReloj);
+
+    posicionBaseRelojX = itemReloj->x();
+    posicionBaseRelojY = itemReloj->y();
+
+    textoTiempo = escena->addText("");
+    textoTiempo->setDefaultTextColor(Qt::white);
+    textoTiempo->setFont(QFont("Arial", 60, QFont::Bold));
+    textoTiempo->setPos(1150, 370);
+    textoTiempo->setZValue(102);
 
     textoVida = escena->addText("");
     textoVida->setDefaultTextColor(Qt::white);
@@ -137,12 +172,66 @@ void VentanaJuego::finalizarPartida(bool victoria){
     if (estadoPartida != EstadoPartida::EnCurso) {
         return;
     }
-    estadoPartida = victoria ? EstadoPartida::Victoria : EstadoPartida::Derrota;
+
+    estadoPartida = victoria? EstadoPartida::Victoria: EstadoPartida::Derrota;
+
     if (temporizadorMovimiento != nullptr) {
         temporizadorMovimiento->stop();
     }
+
+    detenerCronometro();
+
     if (textoResultado != nullptr) {
         textoResultado->setPlainText(victoria ? "¡Victoria!" : "¡Derrota!");
         textoResultado->setVisible(true);
+    }
+}
+
+
+void VentanaJuego::iniciarCronometro(int segundos){
+    tiempoRestante = segundos;
+
+    actualizarTiempo();
+
+    if (temporizadorNivel != nullptr) {
+        temporizadorNivel->start(1000);
+    }
+}
+
+void VentanaJuego::detenerCronometro(){
+    if (temporizadorNivel != nullptr) {
+        temporizadorNivel->stop();
+    }
+
+    if (itemReloj != nullptr) {
+        itemReloj->setPos(posicionBaseRelojX,posicionBaseRelojY);
+    }
+}
+
+void VentanaJuego::actualizarTiempo(){
+    if (estadoPartida != EstadoPartida::EnCurso) {
+        return;
+    }
+
+    if (tiempoRestante > 0) {
+        --tiempoRestante;
+    }
+
+    if (textoTiempo != nullptr) {
+        textoTiempo->setPlainText(QString::fromStdString(std::to_string(tiempoRestante)));
+    }
+
+    if (itemReloj != nullptr) {
+        if (tiempoRestante < 30) {
+            double vibracion = (tiempoRestante % 2 == 1) ? 2.0 : -2.0;
+            itemReloj->setPos(posicionBaseRelojX + vibracion,posicionBaseRelojY-vibracion);
+        } else {
+            itemReloj->setPos(posicionBaseRelojX,posicionBaseRelojY);
+        }
+    }
+
+    if (tiempoRestante == 0) {
+        detenerCronometro();
+        finalizarPartida(false);
     }
 }

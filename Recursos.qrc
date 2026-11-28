@@ -11,5 +11,6 @@
         <file alias="mascorazones">Assets/Items/mascorazones.png</file>
         <file alias="velocidades">Assets/Items/velocidad.png</file>
         <file alias="inicio">Assets/Backgrounds/inicio.jpg</file>
+        <file alias="reloj">Assets/Partida/reloj.png</file>
     </qresource>
 </RCC>
