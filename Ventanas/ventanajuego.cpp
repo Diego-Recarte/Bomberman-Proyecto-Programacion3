@@ -221,15 +221,6 @@ void VentanaJuego::actualizarTiempo(){
         textoTiempo->setPlainText(QString::fromStdString(std::to_string(tiempoRestante)));
     }
 
-    if (itemReloj != nullptr) {
-        if (tiempoRestante < 30) {
-            double vibracion = (tiempoRestante % 2 == 1) ? 2.0 : -2.0;
-            itemReloj->setPos(posicionBaseRelojX + vibracion,posicionBaseRelojY-vibracion);
-        } else {
-            itemReloj->setPos(posicionBaseRelojX,posicionBaseRelojY);
-        }
-    }
-
     if (tiempoRestante == 0) {
         detenerCronometro();
         finalizarPartida(false);

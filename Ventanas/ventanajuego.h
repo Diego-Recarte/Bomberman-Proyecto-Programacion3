@@ -23,10 +23,13 @@ protected:
     void keyPressEvent(QKeyEvent* evento) override;
     void keyReleaseEvent(QKeyEvent* evento) override;
 
+<<<<<<< HEAD
 
 private slots:
     void actualizarTiempo();
 
+=======
+>>>>>>> c1a3d3efdcd9b98e84d51bed675734a3c2c455bc
 private:
 
     PanelVida* panelVida = nullptr;
@@ -48,6 +51,7 @@ private:
     void actualizarPartida();
     void actualizarInterfazVida();
     void finalizarPartida(bool victoria);
+<<<<<<< HEAD
 
 
     QTimer* temporizadorNivel = nullptr;
@@ -62,6 +66,8 @@ private:
 
     void iniciarCronometro(int segundos);
     void detenerCronometro();
+=======
+>>>>>>> c1a3d3efdcd9b98e84d51bed675734a3c2c455bc
 };
 
 #endif // VENTANAJUEGO_H
